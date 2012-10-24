@@ -1,7 +1,7 @@
 include /usr/share/cibs/rules/ips.mk
 include /usr/share/cibs/rules/git.mk
 include /usr/share/cibs/rules/patch.mk
-include /usr/share/cibs/rules/32.mk
+include /usr/share/cibs/rules/64.mk
 
 
 summary := scan/change symbolic links
