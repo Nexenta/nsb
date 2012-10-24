@@ -31,17 +31,13 @@ license c-ares.license  license="$(license)"
 
 dir path=usr
 dir path=usr/lib
-dir path=usr/lib/$(MACH64)
-dir path=usr/lib/$(MACH64)/pkgconfig
+$(build64)dir path=usr/lib/$(MACH64)
+$(build64)dir path=usr/lib/$(MACH64)/pkgconfig
 dir path=usr/lib/pkgconfig
 dir path=usr/share
 dir path=usr/share/man
 dir path=usr/share/man/man3
 dir path=usr/include
-file path=usr/lib/$(MACH64)/libcares.so.2.0.0
-file path=usr/lib/$(MACH64)/pkgconfig/libcares.pc
-file path=usr/lib/pkgconfig/libcares.pc
-file path=usr/lib/libcares.so.2.0.0
 file path=usr/share/man/man3/ares_parse_soa_reply.3
 file path=usr/share/man/man3/ares_timeout.3
 file path=usr/share/man/man3/ares_parse_ptr_reply.3
@@ -87,7 +83,13 @@ file path=usr/include/ares_rules.h
 file path=usr/include/ares_dns.h
 file path=usr/include/ares_version.h
 file path=usr/include/ares.h
-link path=usr/lib/libcares.so target=libcares.so.2.0.0
-link path=usr/lib/$(MACH64)/libcares.so target=libcares.so.2.0.0
-link path=usr/lib/$(MACH64)/libcares.so.2 target=libcares.so.2.0.0
-link path=usr/lib/libcares.so.2 target=libcares.so.2.0.0
+
+$(build32)file path=usr/lib/libcares.so.2.0.0
+$(build32)file path=usr/lib/pkgconfig/libcares.pc
+$(build32)link path=usr/lib/libcares.so target=libcares.so.2.0.0
+$(build32)link path=usr/lib/libcares.so.2 target=libcares.so.2.0.0
+
+$(build64)file path=usr/lib/$(MACH64)/libcares.so.2.0.0
+$(build64)file path=usr/lib/$(MACH64)/pkgconfig/libcares.pc
+$(build64)link path=usr/lib/$(MACH64)/libcares.so target=libcares.so.2.0.0
+$(build64)link path=usr/lib/$(MACH64)/libcares.so.2 target=libcares.so.2.0.0
