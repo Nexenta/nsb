@@ -1,0 +1,92 @@
+set name=pkg.fmri value=pkg:/library/openssl$(version-base)-headers@$(ips-version)
+set name=pkg.summary value="OpenSSL $(version-base) header files"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license=$(license)
+
+depend fmri=pkg:/library/openssl$(version-base)@$(ips-version) type=require
+depend fmri=pkg:/library/openssl$(version-base)@$(ips-version) type=incorporate
+
+dir path=usr
+dir path=usr/include
+
+# Wrapper for 32/64 bits:
+file wrapper-opensslconf.h path=usr/include/openssl/opensslconf.h
+file $(protodir.32)/usr/include/openssl/opensslconf.h path=usr/include/openssl/opensslconf.32.h
+file $(protodir.64)/usr/include/openssl/opensslconf.h path=usr/include/openssl/opensslconf.64.h
+
+file path=usr/include/openssl/aes.h
+file path=usr/include/openssl/asn1.h
+file path=usr/include/openssl/asn1_mac.h
+file path=usr/include/openssl/asn1t.h
+file path=usr/include/openssl/bio.h
+file path=usr/include/openssl/blowfish.h
+file path=usr/include/openssl/bn.h
+file path=usr/include/openssl/buffer.h
+file path=usr/include/openssl/cast.h
+file path=usr/include/openssl/comp.h
+file path=usr/include/openssl/conf.h
+file path=usr/include/openssl/conf_api.h
+file path=usr/include/openssl/crypto.h
+file path=usr/include/openssl/des.h
+file path=usr/include/openssl/des_old.h
+file path=usr/include/openssl/dh.h
+file path=usr/include/openssl/dsa.h
+file path=usr/include/openssl/dso.h
+file path=usr/include/openssl/dtls1.h
+file path=usr/include/openssl/e_os2.h
+file path=usr/include/openssl/ebcdic.h
+file path=usr/include/openssl/engine.h
+file path=usr/include/openssl/err.h
+file path=usr/include/openssl/evp.h
+file path=usr/include/openssl/hmac.h
+file path=usr/include/openssl/krb5_asn.h
+file path=usr/include/openssl/kssl.h
+file path=usr/include/openssl/lhash.h
+file path=usr/include/openssl/md2.h
+file path=usr/include/openssl/md4.h
+file path=usr/include/openssl/md5.h
+file path=usr/include/openssl/obj_mac.h
+file path=usr/include/openssl/objects.h
+file path=usr/include/openssl/ocsp.h
+file path=usr/include/openssl/opensslv.h
+file path=usr/include/openssl/ossl_typ.h
+file path=usr/include/openssl/pem.h
+file path=usr/include/openssl/pem2.h
+file path=usr/include/openssl/pkcs12.h
+file path=usr/include/openssl/pkcs7.h
+file path=usr/include/openssl/pq_compat.h
+file path=usr/include/openssl/pqueue.h
+file path=usr/include/openssl/rand.h
+file path=usr/include/openssl/rc2.h
+file path=usr/include/openssl/rc4.h
+file path=usr/include/openssl/ripemd.h
+file path=usr/include/openssl/rsa.h
+file path=usr/include/openssl/safestack.h
+file path=usr/include/openssl/sha.h
+file path=usr/include/openssl/ssl.h
+file path=usr/include/openssl/ssl2.h
+file path=usr/include/openssl/ssl23.h
+file path=usr/include/openssl/ssl3.h
+file path=usr/include/openssl/stack.h
+file path=usr/include/openssl/store.h
+file path=usr/include/openssl/symhacks.h
+file path=usr/include/openssl/tls1.h
+file path=usr/include/openssl/tmdiff.h
+file path=usr/include/openssl/txt_db.h
+file path=usr/include/openssl/ui.h
+file path=usr/include/openssl/ui_compat.h
+file path=usr/include/openssl/x509.h
+file path=usr/include/openssl/x509_vfy.h
+file path=usr/include/openssl/x509v3.h
+
+dir path=usr/lib/$(mach64)/pkgconfig
+file path=usr/lib/$(mach64)/pkgconfig/libcrypto.pc
+file path=usr/lib/$(mach64)/pkgconfig/libssl.pc
+file path=usr/lib/$(mach64)/pkgconfig/openssl.pc
+
+dir path=usr/lib/pkgconfig
+file path=usr/lib/pkgconfig/libcrypto.pc
+file path=usr/lib/pkgconfig/libssl.pc
+file path=usr/lib/pkgconfig/openssl.pc

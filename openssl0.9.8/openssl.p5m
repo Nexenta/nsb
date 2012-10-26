@@ -1,0 +1,44 @@
+set name=pkg.fmri value=pkg:/library/openssl$(version-base)@$(ips-version)
+set name=pkg.summary value="OpenSSL $(version-base) shared libraries"
+set name=pkg.description value="$(description)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license=$(license)
+
+dir path=usr
+dir path=usr/lib
+dir path=usr/lib/openssl-$(version-base)
+dir path=usr/lib/openssl-$(version-base)/engines
+dir path=usr/lib/openssl-$(version-base)/engines/64
+
+file $(builddir.32)/engines/lib4758cca.so path=usr/lib/openssl-$(version-base)/engines/lib4758cca.so
+file $(builddir.32)/engines/libaep.so path=usr/lib/openssl-$(version-base)/engines/libaep.so
+file $(builddir.32)/engines/libatalla.so path=usr/lib/openssl-$(version-base)/engines/libatalla.so
+file $(builddir.32)/engines/libcapi.so path=usr/lib/openssl-$(version-base)/engines/libcapi.so
+file $(builddir.32)/engines/libchil.so path=usr/lib/openssl-$(version-base)/engines/libchil.so
+file $(builddir.32)/engines/libcswift.so path=usr/lib/openssl-$(version-base)/engines/libcswift.so
+file $(builddir.32)/engines/libdevcrypto.so path=usr/lib/openssl-$(version-base)/engines/libdevcrypto.so
+file $(builddir.32)/engines/libgmp.so path=usr/lib/openssl-$(version-base)/engines/libgmp.so
+file $(builddir.32)/engines/libnuron.so path=usr/lib/openssl-$(version-base)/engines/libnuron.so
+file $(builddir.32)/engines/libsureware.so path=usr/lib/openssl-$(version-base)/engines/libsureware.so
+file $(builddir.32)/engines/libubsec.so path=usr/lib/openssl-$(version-base)/engines/libubsec.so
+
+file path=usr/lib/libssl.so.0.9.8
+file path=usr/lib/libcrypto.so.0.9.8
+
+file $(builddir.64)/engines/lib4758cca.so path=usr/lib/openssl-$(version-base)/engines/64/lib4758cca.so
+file $(builddir.64)/engines/libaep.so path=usr/lib/openssl-$(version-base)/engines/64/libaep.so
+file $(builddir.64)/engines/libatalla.so path=usr/lib/openssl-$(version-base)/engines/64/libatalla.so
+file $(builddir.64)/engines/libcapi.so path=usr/lib/openssl-$(version-base)/engines/64/libcapi.so
+file $(builddir.64)/engines/libchil.so path=usr/lib/openssl-$(version-base)/engines/64/libchil.so
+file $(builddir.64)/engines/libcswift.so path=usr/lib/openssl-$(version-base)/engines/64/libcswift.so
+file $(builddir.64)/engines/libdevcrypto.so path=usr/lib/openssl-$(version-base)/engines/64/libdevcrypto.so
+file $(builddir.64)/engines/libgmp.so path=usr/lib/openssl-$(version-base)/engines/64/libgmp.so
+file $(builddir.64)/engines/libnuron.so path=usr/lib/openssl-$(version-base)/engines/64/libnuron.so
+file $(builddir.64)/engines/libsureware.so path=usr/lib/openssl-$(version-base)/engines/64/libsureware.so
+file $(builddir.64)/engines/libubsec.so path=usr/lib/openssl-$(version-base)/engines/64/libubsec.so
+
+file path=usr/lib/$(mach64)/libssl.so.0.9.8
+file path=usr/lib/$(mach64)/libcrypto.so.0.9.8
+
