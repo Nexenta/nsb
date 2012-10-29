@@ -6,6 +6,9 @@ set name=info.source-url value="$(download)"
 
 license $(license-file) license=$(license)
 
+<transform file link path=.*\.so.* -> \
+    default original_name library/security/openssl >
+
 dir path=usr
 dir path=usr/lib
 dir path=usr/lib/openssl-$(version-base)

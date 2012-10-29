@@ -8,6 +8,10 @@ license $(license-file) license=$(license)
 depend fmri=pkg:/library/openssl$(version-base)@$(ips-version) type=require
 depend fmri=pkg:/library/openssl$(version-base)@$(ips-version) type=incorporate
 
+
+<transform file link path=.*usr/include/openssl.* -> \
+    default original_name library/security/openssl >
+
 dir path=usr
 dir path=usr/include
 

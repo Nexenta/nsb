@@ -1,0 +1,9 @@
+set name=pkg.fmri value=pkg:/library/security/openssl@$(ips-version)
+set name=pkg.summary value="OpenSSL $(version-base) dummy transitional package"
+set name=pkg.description value="$(description)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+set name=pkg.renamed value=true
+
+depend fmri=pkg:/library/openssl0.9.8@$(ips-version) type=require
+
