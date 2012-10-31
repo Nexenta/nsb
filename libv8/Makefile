@@ -39,7 +39,7 @@ GYPFLAGS = \
 export GYPFLAGS
 
 patch-stamp: gyp-stamp
-gyp-stamp:
+gyp-stamp: unpack-stamp
 	# Use system GYP
 	gsed -i 's,build/gyp/,,g' $(sourcedir)/Makefile
 	touch $@
