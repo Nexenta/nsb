@@ -1,0 +1,144 @@
+diff -dubr source/Configure ppp/Configure
+--- source/Configure	2012-03-15 02:20:40.000000000 +0400
++++ ppp/Configure	2012-10-30 13:44:33.505890903 +0400
+@@ -10,7 +10,7 @@
+ 
+ # see INSTALL for instructions.
+ 
+-my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [experimental-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [no-asm] [no-dso] [no-krb5] [sctp] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--with-xxx[=vvv]] [--test-sanity] os/compiler[:flags]\n";
++my $usage="Usage: Configure --pk11-libname=PK11_LIB_LOCATION [no-<cipher> ...] [enable-<cipher> ...] [experimental-<cipher> ...] [-Dxxx] [-lxxx] [-Lxxx] [-fxxx] [-Kxxx] [no-hw-xxx|no-hw] [[no-]threads] [[no-]shared] [[no-]zlib|zlib-dynamic] [no-asm] [no-dso] [no-krb5] [sctp] [386] [--prefix=DIR] [--openssldir=OPENSSLDIR] [--with-xxx[=vvv]] [--test-sanity] os/compiler[:flags]\n";
+ 
+ # Options:
+ #
+@@ -19,6 +19,9 @@
+ # --prefix      prefix for the OpenSSL include, lib and bin directories
+ #               (Default: the OPENSSLDIR directory)
+ #
++# --pk11-libname  PKCS#11 library name.
++#               (Default: none)
++#
+ # --install_prefix  Additional prefix for package builders (empty by
+ #               default).  This needn't be set in advance, you can
+ #               just as well use "make INSTALL_PREFIX=/whatever install".
+@@ -655,6 +658,9 @@
+ my $idx_arflags = $idx++;
+ my $idx_multilib = $idx++;
+ 
++# PKCS#11 engine patch
++my $pk11_libname="";
++
+ my $prefix="";
+ my $libdir="";
+ my $openssldir="";
+@@ -874,6 +880,10 @@
+ 				$_ =~ s/%([0-9a-f]{1,2})/chr(hex($1))/gei;
+ 				$flags.=$_." ";
+ 				}
++                        elsif (/^--pk11-libname=(.*)$/)
++                                {
++                                $pk11_libname=$1;
++                                }
+ 			elsif (/^--prefix=(.*)$/)
+ 				{
+ 				$prefix=$1;
+@@ -1041,6 +1051,13 @@
+ 	exit 0;
+ }
+ 
++if (! $pk11_libname)
++        {
++        print STDERR "You must set --pk11-libname for PKCS#11 library.\n";
++        print STDERR "See README.pkcs11 for more information.\n";
++        exit 1;
++        }
++
+ if ($target =~ m/^CygWin32(-.*)$/) {
+ 	$target = "Cygwin".$1;
+ }
+@@ -1207,6 +1224,8 @@
+ if ($flags ne "")	{ $cflags="$flags$cflags"; }
+ else			{ $no_user_cflags=1;       }
+ 
++$cflags="-DPK11_LIB_LOCATION=\"$pk11_libname\" $cflags";
++
+ # Kerberos settings.  The flavor must be provided from outside, either through
+ # the script "config" or manually.
+ if (!$no_krb5)
+@@ -1596,6 +1615,7 @@
+ 	s/^VERSION=.*/VERSION=$version/;
+ 	s/^MAJOR=.*/MAJOR=$major/;
+ 	s/^MINOR=.*/MINOR=$minor/;
++	s/^PK11_LIB_LOCATION=.*/PK11_LIB_LOCATION=$pk11_libname/;
+ 	s/^SHLIB_VERSION_NUMBER=.*/SHLIB_VERSION_NUMBER=$shlib_version_number/;
+ 	s/^SHLIB_VERSION_HISTORY=.*/SHLIB_VERSION_HISTORY=$shlib_version_history/;
+ 	s/^SHLIB_MAJOR=.*/SHLIB_MAJOR=$shlib_major/;
+Only in ppp/: Configure.orig
+diff -dubr source/crypto/engine/eng_all.c ppp/crypto/engine/eng_all.c
+--- source/crypto/engine/eng_all.c	2011-08-10 22:53:13.000000000 +0400
++++ ppp/crypto/engine/eng_all.c	2012-10-30 13:43:17.300794119 +0400
+@@ -80,6 +80,9 @@
+ 	ENGINE_load_rdrand();
+ #endif
+ 	ENGINE_load_dynamic();
++#ifndef OPENSSL_NO_HW_PKCS11
++	ENGINE_load_pk11();
++#endif
+ #ifndef OPENSSL_NO_STATIC_ENGINE
+ #ifndef OPENSSL_NO_HW
+ #ifndef OPENSSL_NO_HW_4758_CCA
+Only in ppp/crypto/engine: eng_all.c.orig
+diff -dubr source/crypto/engine/engine.h ppp/crypto/engine/engine.h
+--- source/crypto/engine/engine.h	2011-08-10 22:53:13.000000000 +0400
++++ ppp/crypto/engine/engine.h	2012-10-30 13:46:54.858339430 +0400
+@@ -351,6 +351,7 @@
+ #endif
+ #endif
+ void ENGINE_load_cryptodev(void);
++void ENGINE_load_pk11(void);
+ void ENGINE_load_rsax(void);
+ void ENGINE_load_rdrand(void);
+ void ENGINE_load_builtin_engines(void);
+Only in ppp/crypto/engine: engine.h.orig
+diff -dubr source/crypto/engine/Makefile ppp/crypto/engine/Makefile
+--- source/crypto/engine/Makefile	2011-08-14 17:47:27.000000000 +0400
++++ ppp/crypto/engine/Makefile	2012-10-30 13:48:02.183707468 +0400
+@@ -22,12 +22,14 @@
+ 	tb_rsa.c tb_dsa.c tb_ecdsa.c tb_dh.c tb_ecdh.c tb_rand.c tb_store.c \
+ 	tb_cipher.c tb_digest.c tb_pkmeth.c tb_asnmth.c \
+ 	eng_openssl.c eng_cnf.c eng_dyn.c eng_cryptodev.c \
++ 	hw_pk11.c hw_pk11_pub.c hw_pk11_uri.c \
+ 	eng_rsax.c eng_rdrand.c
+ LIBOBJ= eng_err.o eng_lib.o eng_list.o eng_init.o eng_ctrl.o \
+ 	eng_table.o eng_pkey.o eng_fat.o eng_all.o \
+ 	tb_rsa.o tb_dsa.o tb_ecdsa.o tb_dh.o tb_ecdh.o tb_rand.o tb_store.o \
+ 	tb_cipher.o tb_digest.o tb_pkmeth.o tb_asnmth.o \
+ 	eng_openssl.o eng_cnf.o eng_dyn.o eng_cryptodev.o \
++ 	hw_pk11.o hw_pk11_pub.o hw_pk11_uri.o \
+ 	eng_rsax.o eng_rdrand.o
+ 
+ SRC= $(LIBSRC)
+Only in ppp/crypto/engine: Makefile.orig
+diff -dubr source/include/openssl/engine.h ppp/include/openssl/engine.h
+--- source/include/openssl/engine.h	2011-08-10 22:53:13.000000000 +0400
++++ ppp/include/openssl/engine.h	2012-10-30 13:46:54.858339430 +0400
+@@ -351,6 +351,7 @@
+ #endif
+ #endif
+ void ENGINE_load_cryptodev(void);
++void ENGINE_load_pk11(void);
+ void ENGINE_load_rsax(void);
+ void ENGINE_load_rdrand(void);
+ void ENGINE_load_builtin_engines(void);
+diff -dubr source/Makefile.org ppp/Makefile.org
+--- source/Makefile.org	2012-04-22 17:25:19.000000000 +0400
++++ ppp/Makefile.org	2012-10-30 13:43:17.299024078 +0400
+@@ -26,6 +26,9 @@
+ INSTALL_PREFIX=
+ INSTALLTOP=/usr/local/ssl
+ 
++# You must set this through --pk11-libname configure option.
++PK11_LIB_LOCATION=
++
+ # Do not edit this manually. Use Configure --openssldir=DIR do change this!
+ OPENSSLDIR=/usr/local/ssl
+ 
