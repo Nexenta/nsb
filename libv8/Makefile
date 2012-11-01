@@ -8,7 +8,7 @@ summary      := v8 JavaScript engine
 home         := http://code.google.com/p/v8/
 license      := BSD
 license-file := LICENSE.v8
-version      := 3.8.9.20
+version      := 3.14.5
 so-version   := $(version)
 name         := libv8
 libSoname    := $(name).so.$(so-version)
@@ -16,13 +16,13 @@ libSoname    := $(name).so.$(so-version)
 build-depends += \
 	pkg:/developer/build/gyp
 
-archive := libv8_$(version).orig.tar.gz
-download := http://ftp.de.debian.org/debian/pool/main/libv/libv8/$(archive)
+archive := v8-$(version).tar.bz2
+download := http://mirror.yandex.ru/gentoo-distfiles/distfiles/$(archive)
 checksum := \
-     md5:42e6ebd3a04d4532a5bbc2eaf3375f46 \
-    sha1:0f4898f5209014db2cd561d34c9eaf44cf98bec2 \
-  sha256:b03af91f1a111a959f133ca930497294b8faf134203a610998be2b5dd64253d1 \
-    size:11373638
+     md5:be8f17f7cfc2885ecc67ef6b367f2c0d \
+    sha1:92ca5dd0872fcf06273a8994375ec1f4d5310879 \
+  sha256:361ad3b63dc7c9d0943b72b1be592a8135e4ddb0e416b9bcf02b4d2df514fca7 \
+    size:10351058
 
 
 v8arch.32 := ia32
@@ -62,4 +62,5 @@ install-%-stamp: build-%-stamp
 	mkdir -p $(protodir)/$(libdir)
 	mkdir -p $(protodir)/usr/include
 	cp $(v8out) $(protodir)/$(libdir)/
+	touch $@
 
