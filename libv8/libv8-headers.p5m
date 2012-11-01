@@ -4,8 +4,8 @@ set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
 license $(license-file) license="$(license)"
 
-depend fmri=pkg:/library/$(name)@$(ips-version) type=require
-depend fmri=pkg:/library/$(name)@$(ips-version) type=incorporate
+depend fmri=pkg:/library/$(name)-$(so-version)@$(ips-version) type=require
+depend fmri=pkg:/library/$(name)-$(so-version)@$(ips-version) type=incorporate
 
 
 
