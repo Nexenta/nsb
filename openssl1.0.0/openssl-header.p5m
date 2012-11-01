@@ -1,13 +1,13 @@
-set name=pkg.fmri value=pkg:/library/openssl$(version-base)-headers@$(ips-version)
+set name=pkg.fmri value=pkg:/library/openssl-headers@$(ips-version)
 set name=pkg.summary value="OpenSSL $(version-base) header files"
 set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
 
 license $(license-file) license=$(license)
 
-depend fmri=pkg:/library/openssl$(version-base)@$(ips-version) type=require
-depend fmri=pkg:/library/openssl$(version-base)@$(ips-version) type=incorporate
-depend fmri=pkg:/library/openssl0.9.8-headers@$(ips-version) type=exclude
+depend fmri=pkg:/library/openssl$(so-version)@$(ips-version) type=require
+depend fmri=pkg:/library/openssl$(so-version)@$(ips-version) type=incorporate
+depend fmri=pkg:/library/openssl0.9.8-headers type=exclude
 
 
 <transform file link path=.*usr/include/openssl.* -> \
@@ -57,7 +57,6 @@ file path=usr/include/openssl/cast.h
 file path=usr/include/openssl/x509v3.h
 file path=usr/include/openssl/ssl2.h
 file path=usr/include/openssl/opensslv.h
-file path=usr/include/openssl/opensslconf.h
 file path=usr/include/openssl/ocsp.h
 file path=usr/include/openssl/cms.h
 file path=usr/include/openssl/md4.h
