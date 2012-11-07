@@ -6,7 +6,7 @@ include /usr/share/cibs/rules/64.mk
 # Not autotools, but similar:
 include /usr/share/cibs/rules/autotools.mk
 
-# Must run from current directory:
+# Must run from the current directory:
 configure := ./configure
 
 # Flock wrapper even does not return erro on failure:
@@ -25,10 +25,10 @@ checksum := \
 
 summary := event-based server-side javascript engine
 license := BSD
-license-file := 
+license-file := LICENSE
 
 build-depends += \
-	library/libv8-headers \
+	library/libv8 \
 	library/c-ares \
 	library/libev \
 	library/openssl-headers
