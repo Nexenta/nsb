@@ -9,9 +9,8 @@ home         := http://code.google.com/p/v8/
 license      := BSD
 license-file := LICENSE.v8
 version      := 3.14.5
-so-version   := $(version)
 name         := libv8
-libSoname    := $(name).so.$(so-version)
+libSoname    := libv8.so
 
 build-depends += \
 	pkg:/developer/build/gyp
@@ -53,7 +52,7 @@ build-%-stamp: configure-%-stamp
 		CXX="$(CXX)" \
 		LINK="$(CXX)" \
 		library=shared \
-		soname_version=$(so-version) \
+		soname_version= \
 		werror=no \
 		$(v8arch).release
 	touch $@
