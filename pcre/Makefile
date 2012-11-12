@@ -8,6 +8,10 @@ summary := Perl Compatible Regular Expressions
 license := BSD
 license-file := LICENCE
 
+configure-options += \
+	--enable-unicode-properties \
+	--enable-utf
+
 # build-conflicts +=
 
 home     := http://www.pcre.org/
