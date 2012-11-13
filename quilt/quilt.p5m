@@ -1,0 +1,96 @@
+set name=pkg.fmri value=pkg:/developer/$(name)@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license=$(license)
+
+depend fmri=file/gnu-coreutils type=require
+depend fmri=file/gnu-findutils type=require
+depend fmri=shell/bash         type=require
+depend fmri=text/diffstat      type=require
+depend fmri=text/gawk          type=require
+depend fmri=text/gnu-diffutils type=require
+depend fmri=text/gnu-grep      type=require
+depend fmri=text/gnu-patch     type=require
+depend fmri=text/gnu-sed       type=require
+
+dir path=etc
+dir path=etc/bash_completion.d
+dir path=usr
+dir path=usr/bin
+dir path=usr/share
+dir path=usr/share/doc
+dir path=usr/share/doc/quilt
+dir path=usr/share/emacs
+dir path=usr/share/emacs/site-lisp
+dir path=usr/share/man
+dir path=usr/share/man/man1
+dir path=usr/share/quilt
+dir path=usr/share/quilt/scripts
+dir path=usr/share/quilt/compat
+dir path=usr/share/quilt/wrapper
+file path=etc/quilt.quiltrc
+file path=etc/bash_completion.d/quilt
+file path=usr/bin/quilt
+file path=usr/bin/guards
+file path=usr/share/doc/quilt/quilt.pdf
+file path=usr/share/doc/quilt/README.MAIL
+file path=usr/share/doc/quilt/README
+file path=usr/share/emacs/site-lisp/quilt.el
+file path=usr/share/man/man1/quilt.1
+file path=usr/share/quilt/scripts/edmail
+file path=usr/share/quilt/scripts/inspect
+file path=usr/share/quilt/scripts/utilfns
+file path=usr/share/quilt/scripts/backup-files
+file path=usr/share/quilt/scripts/dependency-graph
+file path=usr/share/quilt/scripts/patchfns
+file path=usr/share/quilt/scripts/remove-trailing-ws
+file path=usr/share/quilt/files
+file path=usr/share/quilt/top
+file path=usr/share/quilt/graph
+file path=usr/share/quilt/grep
+file path=usr/share/quilt/import
+file path=usr/share/quilt/fold
+file path=usr/share/quilt/annotate
+file path=usr/share/quilt/new
+file path=usr/share/quilt/applied
+file path=usr/share/quilt/delete
+file path=usr/share/quilt/series
+file path=usr/share/quilt/setup
+file path=usr/share/quilt/next
+file path=usr/share/quilt/compat/column
+file path=usr/share/quilt/compat/getopt
+file path=usr/share/quilt/rename
+file path=usr/share/quilt/remove
+file path=usr/share/quilt/push
+file path=usr/share/quilt/mail
+file path=usr/share/quilt/previous
+file path=usr/share/quilt/wrapper/patch
+file path=usr/share/quilt/upgrade
+file path=usr/share/quilt/unapplied
+file path=usr/share/quilt/fork
+file path=usr/share/quilt/shell
+file path=usr/share/quilt/diff
+file path=usr/share/quilt/edit
+file path=usr/share/quilt/snapshot
+file path=usr/share/quilt/refresh
+file path=usr/share/quilt/patches
+file path=usr/share/quilt/revert
+file path=usr/share/quilt/add
+file path=usr/share/quilt/pop
+file path=usr/share/quilt/header
+link path=usr/share/quilt/compat/tr target=/usr/gnu/bin/tr
+link path=usr/share/quilt/compat/date target=/usr/gnu/bin/date
+link path=usr/share/quilt/compat/find target=/usr/gnu/bin/find
+link path=usr/share/quilt/compat/mktemp target=/usr/gnu/bin/mktemp
+link path=usr/share/quilt/compat/grep target=/usr/gnu/bin/grep
+link path=usr/share/quilt/compat/sed target=/usr/gnu/bin/sed
+link path=usr/share/quilt/compat/bash target=/usr/bin/bash
+link path=usr/share/quilt/compat/diffstat target=/usr/bin/diffstat
+link path=usr/share/quilt/compat/awk target=/usr/bin/gawk
+link path=usr/share/quilt/compat/tail target=/usr/gnu/bin/tail
+link path=usr/share/quilt/compat/sendmail target=/usr/sbin/sendmail
+link path=usr/share/quilt/compat/diff target=/usr/gnu/bin/diff
+link path=usr/share/quilt/compat/patch target=/usr/gnu/bin/patch
+link path=usr/share/quilt/compat/cp target=/usr/gnu/bin/cp

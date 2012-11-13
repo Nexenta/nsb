@@ -1,0 +1,40 @@
+  * Make sure that quilt fails when trying to push a non existant patch (ie
+    if there is a typo in the serie file) unless -f is provided.
+    (Closes: #358875).
+
+Upstream status: they asked for some cleanups, which are done. To be submitted.
+
+---
+ quilt/push.in     |    7 +++++++
+ test/missing.test |    4 ++++
+ 2 files changed, 11 insertions(+)
+
+--- a/quilt/push.in
++++ b/quilt/push.in
+@@ -184,6 +184,13 @@ add_patch()
+ 		no_reject_files="-r $tmp"
+ 	fi
+ 
++	if [ ! -e "$patch_file" -a -z "$opt_force" ]
++	then
++		printf $"Patch %s does not exist\n" \
++		       "$(print_patch $patch)" >&2
++		return 1
++	fi
++
+ 	apply_patch $patch "$patch_file"
+ 	status=$?
+ 	trap "" SIGINT
+--- a/test/missing.test
++++ b/test/missing.test
+@@ -5,6 +5,10 @@
+ 	< missing2.diff
+ 	
+ 	$ quilt push -qa
++	> Patch patches/missing1.diff does not exist
++	> Applying patch patches/missing1.diff
++	
++	$ quilt push -qaf
+ 	> Applying patch patches/missing1.diff
+ 	> Patch patches/missing1.diff does not exist; applied empty patch
+ 	> Applying patch patches/missing2.diff
