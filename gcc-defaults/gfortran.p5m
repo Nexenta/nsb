@@ -22,7 +22,7 @@
 #
 
 
-set name=pkg.fmri value=pkg:/developer/gfortran/gfortran@$(ips-version)
+set name=pkg.fmri value=pkg:/developer/gcc/gfortran@$(ips-version)
 set name=pkg.summary value="GNU Frotran 95 compiler, default version"
 
 depend fmri=pkg:/developer/gcc/gfortran-$(default-version) type=require
