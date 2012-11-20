@@ -39,6 +39,10 @@ file path=usr/share/doc/quilt/README.MAIL
 file path=usr/share/doc/quilt/README
 file path=usr/share/emacs/site-lisp/quilt.el
 file path=usr/share/man/man1/quilt.1
+
+<transform file path=.*usr/share/quilt/.+ -> \
+    set mode 0555>
+
 file path=usr/share/quilt/scripts/edmail
 file path=usr/share/quilt/scripts/inspect
 file path=usr/share/quilt/scripts/utilfns
