@@ -1,0 +1,87 @@
+set name=pkg.fmri value=pkg:/library/$(name)@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+<transform file link path=.+/lib/.+ -> \
+    default original_name system/library >
+
+<transform file link path=.+/include/.+ -> \
+    default original_name pkg:/system/header >
+
+dir path=usr/include
+dir path=usr/lib/$(MACH64)
+dir path=usr/lib/$(MACH64)/pkgconfig
+dir path=usr/lib/pkgconfig
+file path=usr/include/curses.h
+file path=usr/include/cursesapp.h
+file path=usr/include/cursesf.h
+file path=usr/include/cursesm.h
+file path=usr/include/cursesp.h
+file path=usr/include/cursesw.h
+file path=usr/include/cursslk.h
+file path=usr/include/eti.h
+file path=usr/include/etip.h
+file path=usr/include/form.h
+file path=usr/include/menu.h
+file path=usr/include/nc_tparm.h
+file path=usr/include/ncurses_dll.h
+file path=usr/include/panel.h
+file path=usr/include/term.h
+file path=usr/include/term_entry.h
+file path=usr/include/termcap.h
+file path=usr/include/tic.h
+file path=usr/include/unctrl.h
+file path=usr/lib/$(MACH64)/libform.so.5.9
+file path=usr/lib/$(MACH64)/libmenu.so.5.9
+file path=usr/lib/$(MACH64)/libncurses.so.5.9
+file path=usr/lib/$(MACH64)/libpanel.so.5.9
+file path=usr/lib/$(MACH64)/libtic.so.5.9
+file path=usr/lib/$(MACH64)/libtinfo.so.5.9
+file path=usr/lib/$(MACH64)/pkgconfig/form.pc
+file path=usr/lib/$(MACH64)/pkgconfig/menu.pc
+file path=usr/lib/$(MACH64)/pkgconfig/ncurses.pc
+file path=usr/lib/$(MACH64)/pkgconfig/panel.pc
+file path=usr/lib/$(MACH64)/pkgconfig/tic.pc
+file path=usr/lib/$(MACH64)/pkgconfig/tinfo.pc
+file path=usr/lib/libform.so.5.9
+file path=usr/lib/libmenu.so.5.9
+file path=usr/lib/libncurses.so.5.9
+file path=usr/lib/libpanel.so.5.9
+file path=usr/lib/libtic.so.5.9
+file path=usr/lib/libtinfo.so.5.9
+file path=usr/lib/pkgconfig/form.pc
+file path=usr/lib/pkgconfig/menu.pc
+file path=usr/lib/pkgconfig/ncurses.pc
+file path=usr/lib/pkgconfig/panel.pc
+file path=usr/lib/pkgconfig/tic.pc
+file path=usr/lib/pkgconfig/tinfo.pc
+link path=usr/include/ncurses.h target=curses.h
+link path=usr/lib/$(MACH64)/libcurses.so target=libncurses.so.5.9
+link path=usr/lib/$(MACH64)/libform.so target=libform.so.5
+link path=usr/lib/$(MACH64)/libform.so.5 target=libform.so.5.9
+link path=usr/lib/$(MACH64)/libmenu.so target=libmenu.so.5
+link path=usr/lib/$(MACH64)/libmenu.so.5 target=libmenu.so.5.9
+link path=usr/lib/$(MACH64)/libncurses.so target=libncurses.so.5
+link path=usr/lib/$(MACH64)/libncurses.so.5 target=libncurses.so.5.9
+link path=usr/lib/$(MACH64)/libpanel.so target=libpanel.so.5
+link path=usr/lib/$(MACH64)/libpanel.so.5 target=libpanel.so.5.9
+link path=usr/lib/$(MACH64)/libtic.so target=libtic.so.5
+link path=usr/lib/$(MACH64)/libtic.so.5 target=libtic.so.5.9
+link path=usr/lib/$(MACH64)/libtinfo.so target=libtinfo.so.5
+link path=usr/lib/$(MACH64)/libtinfo.so.5 target=libtinfo.so.5.9
+link path=usr/lib/libcurses.so target=libncurses.so.5.9
+link path=usr/lib/libform.so target=libform.so.5
+link path=usr/lib/libform.so.5 target=libform.so.5.9
+link path=usr/lib/libmenu.so target=libmenu.so.5
+link path=usr/lib/libmenu.so.5 target=libmenu.so.5.9
+link path=usr/lib/libncurses.so target=libncurses.so.5
+link path=usr/lib/libncurses.so.5 target=libncurses.so.5.9
+link path=usr/lib/libpanel.so target=libpanel.so.5
+link path=usr/lib/libpanel.so.5 target=libpanel.so.5.9
+link path=usr/lib/libtic.so target=libtic.so.5
+link path=usr/lib/libtic.so.5 target=libtic.so.5.9
+link path=usr/lib/libtinfo.so target=libtinfo.so.5
+link path=usr/lib/libtinfo.so.5 target=libtinfo.so.5.9
