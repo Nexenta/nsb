@@ -1,0 +1,12 @@
+Index: glib/glib/tests/strfuncs.c
+===================================================================
+--- glib.orig/glib/tests/strfuncs.c
++++ glib/glib/tests/strfuncs.c
+@@ -21,7 +21,6 @@
+ 
+ #define GLIB_DISABLE_DEPRECATION_WARNINGS
+ 
+-#define _XOPEN_SOURCE 600
+ #include <ctype.h>
+ #include <errno.h>
+ #include <locale.h>

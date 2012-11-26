@@ -1,0 +1,19 @@
+diff --git a/gio/gunixmounts.c b/gio/gunixmounts.c
+index e288e06..4edcbe4 100644
+--- a/gio/gunixmounts.c
++++ b/gio/gunixmounts.c
+@@ -271,6 +271,14 @@ g_unix_is_mount_path_system_internal (const char *mount_path)
+     "/sbin",
+     "/net",
+     "/sys",
++    "/devices",
++    "/system/contract",
++    "/etc/mnttab",
++    "/etc/svc/volatile",
++    "/system/object",
++    "/etc/dfs/sharetab",
++    "/dev/fd",
++    "/lib/libc.so.1",
+     NULL
+   };
+ 

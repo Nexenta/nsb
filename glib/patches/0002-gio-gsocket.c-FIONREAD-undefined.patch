@@ -1,0 +1,27 @@
+Index: glib/configure.ac
+===================================================================
+--- glib.orig/configure.ac
++++ glib/configure.ac
+@@ -887,6 +887,7 @@ AC_CHECK_HEADERS([mntent.h sys/mnttab.h
+ AC_CHECK_HEADERS([sys/uio.h sys/mkdev.h])
+ AC_CHECK_HEADERS([linux/magic.h])
+ AC_CHECK_HEADERS([sys/prctl.h])
++AC_CHECK_HEADERS([sys/filio.h])
+ 
+ AC_CHECK_HEADERS([sys/mount.h sys/sysctl.h], [], [],
+ [#if HAVE_SYS_PARAM_H
+Index: glib/gio/gsocket.c
+===================================================================
+--- glib.orig/gio/gsocket.c
++++ glib/gio/gsocket.c
+@@ -48,6 +48,10 @@
+ #include <sys/uio.h>
+ #endif
+ 
++#ifdef HAVE_SYS_FILIO_H
++#include <sys/filio.h>
++#endif
++
+ #include "gcancellable.h"
+ #include "gioenumtypes.h"
+ #include "ginetaddress.h"

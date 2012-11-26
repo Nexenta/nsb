@@ -1,0 +1,11 @@
+--- source/configure.ac.orig	2012-11-22 14:58:23.206245278 +0400
++++ source/configure.ac	2012-11-22 14:59:51.779714337 +0400
+@@ -1105,7 +1105,7 @@
+ case $host in
+   *-*-solaris* )
+      AC_DEFINE(_XOPEN_SOURCE_EXTENDED, 1, Needed to get declarations for msg_control and msg_controllen on Solaris)
+-     AC_DEFINE(_XOPEN_SOURCE,          2, Needed to get declarations for msg_control and msg_controllen on Solaris)
++     AC_DEFINE(_XOPEN_SOURCE,        500, Needed to get declarations for msg_control and msg_controllen on Solaris)
+      AC_DEFINE(__EXTENSIONS__,         1, Needed to get declarations for msg_control and msg_controllen on Solaris)
+      ;;
+ esac
