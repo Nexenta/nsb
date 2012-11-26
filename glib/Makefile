@@ -14,6 +14,8 @@ build-depends += \
 	compress/xz \
 	library/pcre \
 	library/libffi \
+	developer/pkg-config \
+	developer/gnu-gettext \
 	runtime/python
 
 configure-env.32 = DTRACE="dtrace -32"
@@ -33,6 +35,9 @@ configure-options += \
 # Solved: https://github.com/illumos/illumos-gate/commit/4d1bea1
 configure-options.32 = \
 	--disable-largefile
+
+configure-env += \
+	MSGFMT="/usr/gnu/bin/msgfmt"
 
 name     := glib
 home     := http://www.gnu.org/software/$(name)/
