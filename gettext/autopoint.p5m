@@ -1,0 +1,17 @@
+set name=pkg.fmri value=pkg:/developer/gnu-$(name)/autopoint@$(ips-version)
+set name=pkg.summary value="The autopoint program from GNU gettext"
+set name=pkg.description value="The `autopoint' program copies standard gettext infrastructure files into a source package. It extracts from a macro call of the form `AM_GNU_GETTEXT_VERSION(VERSION)', found in the package's `configure.in' or `configure.ac' file, the gettext version used by the package, and copies the infrastructure files belonging to this version into the package."
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/developer/versioning/git@1.7.0.5 type=require
+
+file path=usr/gnu/bin/autopoint
+file path=usr/gnu/share/man/man1/autopoint.1
+file path=usr/gnu/share/doc/gettext/autopoint.1.html
+file path=usr/gnu/share/gettext/archive.git.tar.gz
+
+link path=usr/bin/autopoint target=../gnu/bin/autopoint
+link path=usr/share/man/man1/autopoint.1 target=../../../gnu/share/man/man1/autopoint.1

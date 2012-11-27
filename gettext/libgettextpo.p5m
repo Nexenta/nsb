@@ -1,0 +1,9 @@
+set name=pkg.fmri value=pkg:/library/gnu-$(name)/libgettextpo@$(ips-version)
+set name=pkg.summary value="GNU Internationalization library"
+set name=pkg.description value="This package contains the libgettextpo shared library for interfacing programmatically with GNU gettext .po files."
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+file path=usr/gnu/lib/$(MACH64)/libgettextpo.so.0.5.1
+link path=usr/gnu/lib/$(MACH64)/libgettextpo.so.0 target=libgettextpo.so.0.5.1
+

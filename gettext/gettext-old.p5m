@@ -1,0 +1,4 @@
+set name=pkg.fmri value=pkg:/text/gnu-$(name)@0.18
+set name=pkg.summary value="$(summary), dummy package"
+set name=pkg.obsolete value=true
+

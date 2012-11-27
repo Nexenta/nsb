@@ -1,0 +1,250 @@
+set name=pkg.fmri value=pkg:/developer/gnu-$(name)@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/runtime/gnu-gettext-base@$(ips-version) type=require
+depend fmri=pkg:/runtime/gnu-gettext-base@$(ips-version) type=incorporate
+
+depend fmri=pkg:/library/gnu-gettext/libgettextpo@$(ips-version) type=require
+depend fmri=pkg:/library/gnu-gettext/libgettextpo@$(ips-version) type=incorporate
+
+depend fmri=pkg:/library/gnu-gettext/libasprintf@$(ips-version) type=require
+depend fmri=pkg:/library/gnu-gettext/libasprintf@$(ips-version) type=incorporate
+
+<transform file path=usr/gnu/bin/(.+) -> \
+emit link path=usr/bin/g%<1> target=../gnu/bin/%<1> >
+
+<transform file path=usr/gnu/share/man/man1/(.+) -> \
+emit link path=usr/share/man/man1/g%<1> target=../../../gnu/share/man/man1/%<1>>
+
+# It's all "devel"
+<transform file dir link -> set facet.devel false >
+
+
+file path=usr/gnu/bin/msgmerge
+file path=usr/gnu/bin/msgcat
+file path=usr/gnu/bin/msgen
+file path=usr/gnu/bin/msgfmt
+file path=usr/gnu/bin/msgunfmt
+file path=usr/gnu/bin/msgcmp
+file path=usr/gnu/bin/xgettext
+file path=usr/gnu/bin/msgattrib
+file path=usr/gnu/bin/msggrep
+file path=usr/gnu/bin/msgexec
+file path=usr/gnu/bin/msgconv
+file path=usr/gnu/bin/recode-sr-latin
+file path=usr/gnu/bin/msgfilter
+file path=usr/gnu/bin/gettextize
+file path=usr/gnu/bin/msginit
+file path=usr/gnu/bin/msgcomm
+file path=usr/gnu/bin/msguniq
+file path=usr/gnu/lib/$(MACH64)/libgettextpo.a
+file path=usr/gnu/lib/$(MACH64)/libgettextlib-0.18.1.so
+file path=usr/gnu/lib/$(MACH64)/gettext/user-email
+file path=usr/gnu/lib/$(MACH64)/gettext/project-id
+file path=usr/gnu/lib/$(MACH64)/gettext/urlget
+file path=usr/gnu/lib/$(MACH64)/gettext/hostname
+file path=usr/gnu/lib/$(MACH64)/libgettextsrc-0.18.1.so
+file path=usr/gnu/lib/$(MACH64)/libasprintf.a
+file path=usr/gnu/share/gettext/config.rpath
+file path=usr/gnu/share/gettext/styles/po-emacs-xterm16.css
+file path=usr/gnu/share/gettext/styles/po-emacs-xterm.css
+file path=usr/gnu/share/gettext/styles/po-emacs-xterm256.css
+file path=usr/gnu/share/gettext/styles/po-vim.css
+file path=usr/gnu/share/gettext/styles/po-default.css
+file path=usr/gnu/share/gettext/styles/po-emacs-x.css
+file path=usr/gnu/share/gettext/ABOUT-NLS
+file path=usr/gnu/share/gettext/intl/COPYING.LIB-2.1
+file path=usr/gnu/share/gettext/intl/plural-exp.h
+file path=usr/gnu/share/gettext/intl/localealias.c
+file path=usr/gnu/share/gettext/intl/gmo.h
+file path=usr/gnu/share/gettext/intl/ngettext.c
+file path=usr/gnu/share/gettext/intl/plural.y
+file path=usr/gnu/share/gettext/intl/export.h
+file path=usr/gnu/share/gettext/intl/dcigettext.c
+file path=usr/gnu/share/gettext/intl/wprintf-parse.h
+file path=usr/gnu/share/gettext/intl/osdep.c
+file path=usr/gnu/share/gettext/intl/lock.c
+file path=usr/gnu/share/gettext/intl/Makefile.in
+file path=usr/gnu/share/gettext/intl/printf-parse.h
+file path=usr/gnu/share/gettext/intl/config.charset
+file path=usr/gnu/share/gettext/intl/loadmsgcat.c
+file path=usr/gnu/share/gettext/intl/localcharset.c
+file path=usr/gnu/share/gettext/intl/explodename.c
+file path=usr/gnu/share/gettext/intl/version.c
+file path=usr/gnu/share/gettext/intl/l10nflist.c
+file path=usr/gnu/share/gettext/intl/threadlib.c
+file path=usr/gnu/share/gettext/intl/vasnwprintf.h
+file path=usr/gnu/share/gettext/intl/dcngettext.c
+file path=usr/gnu/share/gettext/intl/os2compat.h
+file path=usr/gnu/share/gettext/intl/relocatable.c
+file path=usr/gnu/share/gettext/intl/finddomain.c
+file path=usr/gnu/share/gettext/intl/gettext.c
+file path=usr/gnu/share/gettext/intl/hash-string.c
+file path=usr/gnu/share/gettext/intl/libgnuintl.h.in
+file path=usr/gnu/share/gettext/intl/gettextP.h
+file path=usr/gnu/share/gettext/intl/log.c
+file path=usr/gnu/share/gettext/intl/loadinfo.h
+file path=usr/gnu/share/gettext/intl/locale.alias
+file path=usr/gnu/share/gettext/intl/intl-compat.c
+file path=usr/gnu/share/gettext/intl/vasnprintf.c
+file path=usr/gnu/share/gettext/intl/tsearch.h
+file path=usr/gnu/share/gettext/intl/ref-del.sin
+file path=usr/gnu/share/gettext/intl/dcgettext.c
+file path=usr/gnu/share/gettext/intl/printf-args.c
+file path=usr/gnu/share/gettext/intl/plural.c
+file path=usr/gnu/share/gettext/intl/dgettext.c
+file path=usr/gnu/share/gettext/intl/os2compat.c
+file path=usr/gnu/share/gettext/intl/ChangeLog
+file path=usr/gnu/share/gettext/intl/relocatable.h
+file path=usr/gnu/share/gettext/intl/eval-plural.h
+file path=usr/gnu/share/gettext/intl/intl-exports.c
+file path=usr/gnu/share/gettext/intl/localcharset.h
+file path=usr/gnu/share/gettext/intl/lock.h
+file path=usr/gnu/share/gettext/intl/printf-parse.c
+file path=usr/gnu/share/gettext/intl/textdomain.c
+file path=usr/gnu/share/gettext/intl/plural-exp.c
+file path=usr/gnu/share/gettext/intl/COPYING.LIB-2.0
+file path=usr/gnu/share/gettext/intl/printf-args.h
+file path=usr/gnu/share/gettext/intl/bindtextdom.c
+file path=usr/gnu/share/gettext/intl/dngettext.c
+file path=usr/gnu/share/gettext/intl/langprefs.c
+file path=usr/gnu/share/gettext/intl/libintl.rc
+file path=usr/gnu/share/gettext/intl/vasnprintf.h
+file path=usr/gnu/share/gettext/intl/tsearch.c
+file path=usr/gnu/share/gettext/intl/xsize.h
+file path=usr/gnu/share/gettext/intl/printf.c
+file path=usr/gnu/share/gettext/intl/setlocale.c
+file path=usr/gnu/share/gettext/intl/VERSION
+file path=usr/gnu/share/gettext/intl/localename.c
+file path=usr/gnu/share/gettext/intl/ref-add.sin
+file path=usr/gnu/share/gettext/intl/hash-string.h
+file path=usr/gnu/share/gettext/projects/GNOME/trigger
+file path=usr/gnu/share/gettext/projects/GNOME/teams.url
+file path=usr/gnu/share/gettext/projects/GNOME/teams.html
+file path=usr/gnu/share/gettext/projects/GNOME/team-address
+file path=usr/gnu/share/gettext/projects/team-address
+file path=usr/gnu/share/gettext/projects/KDE/teams.url
+file path=usr/gnu/share/gettext/projects/KDE/teams.html
+file path=usr/gnu/share/gettext/projects/KDE/team-address
+file path=usr/gnu/share/gettext/projects/KDE/trigger
+file path=usr/gnu/share/gettext/projects/index
+file path=usr/gnu/share/gettext/projects/TP/teams.url
+file path=usr/gnu/share/gettext/projects/TP/trigger
+file path=usr/gnu/share/gettext/projects/TP/team-address
+file path=usr/gnu/share/gettext/projects/TP/teams.html
+file path=usr/gnu/share/gettext/po/Rules-quot
+file path=usr/gnu/share/gettext/po/Makevars.template
+file path=usr/gnu/share/gettext/po/insert-header.sin
+file path=usr/gnu/share/gettext/po/quot.sed
+file path=usr/gnu/share/gettext/po/Makefile.in.in
+file path=usr/gnu/share/gettext/po/remove-potcdate.sin
+file path=usr/gnu/share/gettext/po/en@boldquot.header
+file path=usr/gnu/share/gettext/po/boldquot.sed
+file path=usr/gnu/share/gettext/po/en@quot.header
+file path=usr/gnu/share/gettext/msgunfmt.tcl
+file path=usr/gnu/share/gettext/gettext.h
+
+<transform file path=.*usr/gnu/share/aclocal.* -> \
+    set action.hash %(path) >
+<transform file path=.*usr/gnu/share/aclocal.* -> \
+    edit path usr/gnu/ usr/ >
+
+file path=usr/gnu/share/aclocal/glibc21.m4
+file path=usr/gnu/share/aclocal/inttypes-pri.m4
+file path=usr/gnu/share/aclocal/progtest.m4
+file path=usr/gnu/share/aclocal/uintmax_t.m4
+file path=usr/gnu/share/aclocal/po.m4
+file path=usr/gnu/share/aclocal/size_max.m4
+file path=usr/gnu/share/aclocal/lib-link.m4
+file path=usr/gnu/share/aclocal/lib-prefix.m4
+file path=usr/gnu/share/aclocal/lib-ld.m4
+file path=usr/gnu/share/aclocal/fcntl-o.m4
+file path=usr/gnu/share/aclocal/threadlib.m4
+file path=usr/gnu/share/aclocal/intl.m4
+file path=usr/gnu/share/aclocal/intldir.m4
+file path=usr/gnu/share/aclocal/intmax.m4
+file path=usr/gnu/share/aclocal/intlmacosx.m4
+file path=usr/gnu/share/aclocal/glibc2.m4
+file path=usr/gnu/share/aclocal/lock.m4
+file path=usr/gnu/share/aclocal/gettext.m4
+file path=usr/gnu/share/aclocal/wchar_t.m4
+file path=usr/gnu/share/aclocal/visibility.m4
+file path=usr/gnu/share/aclocal/printf-posix.m4
+file path=usr/gnu/share/aclocal/wint_t.m4
+file path=usr/gnu/share/aclocal/lcmessage.m4
+file path=usr/gnu/share/aclocal/codeset.m4
+file path=usr/gnu/share/aclocal/longlong.m4
+file path=usr/gnu/share/aclocal/nls.m4
+file path=usr/gnu/share/aclocal/inttypes_h.m4
+file path=usr/gnu/share/aclocal/iconv.m4
+file path=usr/gnu/share/aclocal/xsize.m4
+file path=usr/gnu/share/aclocal/stdint_h.m4
+file path=usr/gnu/share/aclocal/intdiv0.m4
+
+file path=usr/gnu/share/locale/fr/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/nl/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/cs/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/pl/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/es/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/gl/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/zh_TW/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/nb/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/zh_CN/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/et/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/bg/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/tr/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/sk/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/be/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/da/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/ca/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/ro/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/it/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/sl/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/sr/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/fi/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/sv/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/eu/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/en@quot/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/pt/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/ko/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/ru/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/id/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/de/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/ja/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/vi/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/pt_BR/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/nn/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/uk/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/el/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/locale/en@boldquot/LC_MESSAGES/gettext-tools.mo
+file path=usr/gnu/share/man/man1/msgfmt.1
+file path=usr/gnu/share/man/man1/xgettext.1
+file path=usr/gnu/share/man/man1/msgcat.1
+file path=usr/gnu/share/man/man1/msgcomm.1
+file path=usr/gnu/share/man/man1/gettextize.1
+file path=usr/gnu/share/man/man1/msgen.1
+file path=usr/gnu/share/man/man1/msgcmp.1
+file path=usr/gnu/share/man/man1/msgexec.1
+file path=usr/gnu/share/man/man1/msgmerge.1
+file path=usr/gnu/share/man/man1/msginit.1
+file path=usr/gnu/share/man/man1/msgfilter.1
+file path=usr/gnu/share/man/man1/recode-sr-latin.1
+file path=usr/gnu/share/man/man1/msgunfmt.1
+file path=usr/gnu/share/man/man1/msguniq.1
+file path=usr/gnu/share/man/man1/msggrep.1
+file path=usr/gnu/share/man/man1/msgattrib.1
+file path=usr/gnu/share/man/man1/msgconv.1
+file path=usr/include/gettext-po.h
+file path=usr/include/autosprintf.h
+file path=usr/share/info/gettext.info
+file path=usr/share/info/autosprintf.info
+link path=usr/gnu/lib/$(MACH64)/libgettextsrc.so target=libgettextsrc-0.18.1.so
+link path=usr/gnu/lib/$(MACH64)/libasprintf.so.0 target=libasprintf.so.0.0.0
+link path=usr/gnu/lib/$(MACH64)/libgettextlib.so target=libgettextlib-0.18.1.so
+link path=usr/gnu/lib/$(MACH64)/libgettextpo.so.0 target=libgettextpo.so.0.5.1
+link path=usr/gnu/lib/$(MACH64)/libasprintf.so target=libasprintf.so.0.0.0
+link path=usr/gnu/lib/$(MACH64)/libgettextpo.so target=libgettextpo.so.0.5.1
