@@ -7,6 +7,14 @@ summary := the shell
 license := GPL
 license-file := COPYING
 
+build-dep += \
+	library/ncurses
+
+configure-options += \
+	--with-curses
+
+configure-env += LIBS="-ltinfo"
+
 
 name     := bash
 home     := http://www.gnu.org/software/$(name)/
