@@ -1,0 +1,36 @@
+Description: ignore section symbols without a BFD section.
+Bug: http://sourceware.org/bugzilla/show_bug.cgi?id=14493
+Index: binutils/bfd/elf.c
+===================================================================
+--- binutils.orig/bfd/elf.c	2012-10-28 16:32:57.498420933 +0400
++++ binutils/bfd/elf.c	2012-10-28 18:07:43.088367811 +0400
+@@ -3242,15 +3242,24 @@
+ }
+ 
+ /* Don't output section symbols for sections that are not going to be
+-   output.  */
++   output, that are duplicates or there is no BFD section.  */
+ 
+ static bfd_boolean
+ ignore_section_sym (bfd *abfd, asymbol *sym)
+ {
+-  return ((sym->flags & BSF_SECTION_SYM) != 0
+-	  && !(sym->section->owner == abfd
+-	       || (sym->section->output_section->owner == abfd
+-		   && sym->section->output_offset == 0)));
++  elf_symbol_type *type_ptr;
++
++  if ((sym->flags & BSF_SECTION_SYM) == 0)
++    return FALSE;
++
++  type_ptr = elf_symbol_from (abfd, sym);
++  return ((type_ptr != NULL
++       && type_ptr->internal_elf_sym.st_shndx != 0
++       && bfd_is_abs_section (sym->section))
++      || !(sym->section->owner == abfd
++           || (sym->section->output_section->owner == abfd
++           && sym->section->output_offset == 0)
++           || bfd_is_abs_section (sym->section)));
+ }
+ 
+ static bfd_boolean

@@ -1,0 +1,15 @@
+Description: Check bad section index
+Bug: http://sourceware.org/bugzilla/show_bug.cgi?id=14493
+Index: binutils/binutils/readelf.c
+===================================================================
+--- binutils.orig/binutils/readelf.c	2012-10-28 16:32:57.669492867 +0400
++++ binutils/binutils/readelf.c	2012-10-28 18:13:56.322847064 +0400
+@@ -8824,6 +8824,8 @@
+ 	sprintf (buff, "OS [0x%04x]", type & 0xffff);
+       else if (type >= SHN_LORESERVE)
+ 	sprintf (buff, "RSV[0x%04x]", type & 0xffff);
++      else if (type >= elf_header.e_shnum)
++	sprintf (buff, "bad section index[%3d]", type);
+       else
+ 	sprintf (buff, "%3d", type);
+       break;

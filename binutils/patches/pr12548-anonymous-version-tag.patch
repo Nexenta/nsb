@@ -1,0 +1,19 @@
+Description: anonymous version tag mapped to base version
+Bug: http://sourceware.org/bugzilla/show_bug.cgi?id=12548
+Index: binutils/ld/ldlang.c
+===================================================================
+--- binutils.orig/ld/ldlang.c	2012-11-21 09:58:35.566841471 +0000
++++ binutils/ld/ldlang.c	2012-11-21 10:41:26.018566074 +0000
+@@ -7819,9 +7819,9 @@
+   if (link_info.version_info != NULL
+       && (name[0] == '\0' || link_info.version_info->name[0] == '\0'))
+     {
+-      einfo (_("%X%P: anonymous version tag cannot be combined"
+-	       " with other version tags\n"));
+-      free (version);
++      version->deps = NULL;
++      version->name = "";
++      version->vernum = 0;
+       return;
+     }
+ 

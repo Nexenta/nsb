@@ -1,0 +1,22 @@
+Author: 
+Description: Description: Add (/usr)/lib32 to the search paths on x86_64.
+Author: Aurelien Jarno <aurel32.debian.org>
+Upstream status: Debian specific
+Index: binutils/ld/emulparams/elf_i386.sh
+===================================================================
+--- binutils.orig/ld/emulparams/elf_i386.sh	2012-10-28 16:32:06.388214837 +0400
++++ binutils/ld/emulparams/elf_i386.sh	2012-10-28 16:37:09.730487669 +0400
+@@ -14,3 +14,13 @@
+ NO_SMALL_DATA=yes
+ SEPARATE_GOTPLT=12
+ IREL_IN_PLT=
++
++# Linux modify the default library search path to first include
++# a 32-bit specific directory.
++case "$target" in
++  x86_64*-linux* | i[3-7]86*-linux* | x86_64*-kfreebsd*-gnu | i[3-7]86*-kfreebsd*-gnu)
++    case "$EMULATION_NAME" in
++      *i386*) LIBPATH_SUFFIX=32 ;;
++    esac
++    ;;
++esac

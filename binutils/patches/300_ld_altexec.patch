@@ -1,0 +1,80 @@
+diff --git a/ld/ld.texinfo b/ld/ld.texinfo
+index 6c74ff5..1830306 100644
+--- a/ld/ld.texinfo
++++ b/ld/ld.texinfo
+@@ -2718,7 +2718,10 @@ You can change the behaviour of @command{ld} with the environment variables
+ @ifclear SingleFormat
+ @code{GNUTARGET},
+ @end ifclear
+-@code{LDEMULATION} and @code{COLLECT_NO_DEMANGLE}.
++@code{LDEMULATION},
++@code{COLLECT_NO_DEMANGLE}
++and
++@code{LD_ALTEXEC}.
+ 
+ @ifclear SingleFormat
+ @kindex GNUTARGET
+@@ -2756,6 +2759,12 @@ a similar fashion by the @code{gcc} linker wrapper program.  The default
+ may be overridden by the @samp{--demangle} and @samp{--no-demangle}
+ options.
+ 
++@kindex LD_ALTEXEC
++@cindex alternative linker
++@code{LD_ALTEXEC} sets alternative linker. @command{ld} executes,
++and passes control to this alternative linker. For instance one
++can set @code{LD_ALTEXEC=echo} to debug linker command line.
++
+ @c man end
+ @end ifset
+ 
+diff --git a/ld/ldmain.c b/ld/ldmain.c
+index b2810a7..8b5612f 100644
+--- a/ld/ldmain.c
++++ b/ld/ldmain.c
+@@ -52,6 +52,7 @@
+ #endif
+ 
+ #include <string.h>
++#include <errno.h>
+ 
+ #ifdef HAVE_SBRK
+ #if !HAVE_DECL_SBRK
+@@ -173,12 +174,38 @@ ld_cleanup (void)
+     unlink_if_ordinary (output_filename);
+ }
+ 
++static void
++maybe_altexec(char **argv)
++{
++  char *LD_ALTEXEC;
++
++  /* If LD_ALTEXEC is not set or is empty, just return */
++  LD_ALTEXEC = getenv("LD_ALTEXEC");
++  if (LD_ALTEXEC == NULL)
++    return;
++
++  if (*LD_ALTEXEC == '\0')
++    return;
++
++  /* Unset LD_ALTEXEC for case when it points to this program itself ;-) */
++  if (unsetenv("LD_ALTEXEC"))
++    exit(errno);
++
++  argv[0] = LD_ALTEXEC;
++  execvp(LD_ALTEXEC, argv);
++
++  /* We are here only if execvp() failed */
++  exit(errno);
++}
++
+ int
+ main (int argc, char **argv)
+ {
+   char *emulation;
+   long start_time = get_run_time ();
+ 
++  maybe_altexec(argv);
++
+ #if defined (HAVE_SETLOCALE) && defined (HAVE_LC_MESSAGES)
+   setlocale (LC_MESSAGES, "");
+ #endif

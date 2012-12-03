@@ -1,0 +1,18 @@
+Index: binutils/ld/emulparams/elf_i386_sol2.sh
+===================================================================
+--- binutils.orig/ld/emulparams/elf_i386_sol2.sh	2012-10-28 21:44:11.532380262 +0400
++++ binutils/ld/emulparams/elf_i386_sol2.sh	2012-10-28 22:16:29.024955547 +0400
+@@ -2,3 +2,13 @@
+ . ${srcdir}/emulparams/solaris2.sh
+ EXTRA_EM_FILE=solaris2
+ OUTPUT_FORMAT="elf32-i386-sol2"
++
++# Dyson modify the default library search path to first include
++# a 32-bit specific directory.
++case "$target" in
++  x86_64*-solaris* | i[3-7]86*-solaris*)
++    case "$EMULATION_NAME" in
++      *i386*) LIBPATH_SUFFIX=32 ;;
++    esac
++    ;;
++esac

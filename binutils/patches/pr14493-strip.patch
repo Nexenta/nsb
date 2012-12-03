@@ -1,0 +1,56 @@
+Description: Properly set the output maxpagesize
+ when rewriting program header.
+
+    PR binutils/14493
+    * elf.c (copy_elf_program_header): When rewriting program
+    header, set the output maxpagesize to the maximum alignment
+    of input PT_LOAD segments.
+
+From: H. J. Lu <hongjiu.lu@intel.com>
+Bug: http://sourceware.org/bugzilla/show_bug.cgi?id=14493
+
+Index: binutils/bfd/elf.c
+===================================================================
+--- binutils.orig/bfd/elf.c	2012-11-09 21:15:06.155929071 +0000
++++ binutils/bfd/elf.c	2012-11-21 08:53:00.311430441 +0000
+@@ -6179,6 +6179,8 @@
+ static bfd_boolean
+ copy_private_bfd_data (bfd *ibfd, bfd *obfd)
+ {
++  bfd_vma maxpagesize = 0;
++
+   if (bfd_get_flavour (ibfd) != bfd_target_elf_flavour
+       || bfd_get_flavour (obfd) != bfd_target_elf_flavour)
+     return TRUE;
+@@ -6207,10 +6209,18 @@
+ 	   section = section->next)
+ 	section->segment_mark = FALSE;
+ 
++      /* Find the maximum alignment of input PT_LOAD segments.  */
+       num_segments = elf_elfheader (ibfd)->e_phnum;
+       for (i = 0, segment = elf_tdata (ibfd)->phdr;
+ 	   i < num_segments;
+ 	   i++, segment++)
++    if (segment->p_type == PT_LOAD
++    && maxpagesize < segment->p_align)
++    maxpagesize = segment->p_align;
++
++      for (i = 0, segment = elf_tdata (ibfd)->phdr;
++       i < num_segments;
++       i++, segment++)
+ 	{
+ 	  /* PR binutils/3535.  The Solaris linker always sets the p_paddr
+ 	     and p_memsz fields of special segments (DYNAMIC, INTERP) to 0
+@@ -6263,6 +6273,12 @@
+     }
+ 
+ rewrite:
++  /* When rewriting program header, set the output maxpagesize to the
++     maximum alignment of input PT_LOAD segments.  */
++  if (maxpagesize &&
++      maxpagesize != get_elf_backend_data (obfd)->maxpagesize)
++    bfd_emul_set_maxpagesize (obfd->xvec->name, maxpagesize);
++
+   return rewrite_elf_program_header (ibfd, obfd);
+ }
+ 

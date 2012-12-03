@@ -1,0 +1,14 @@
+Index: binutils/gold/timer.cc
+===================================================================
+--- binutils.orig/gold/timer.cc
++++ binutils/gold/timer.cc
+@@ -50,6 +50,9 @@ Timer::start()
+ }
+ 
+ #if HAVE_SYSCONF && defined _SC_CLK_TCK
++# if HAVE_UNISTD_H
++#  include <unistd.h>
++# endif
+ # define TICKS_PER_SECOND sysconf (_SC_CLK_TCK) /* POSIX 1003.1-1996 */
+ #else
+ # ifdef CLK_TCK

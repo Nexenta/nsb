@@ -1,0 +1,20 @@
+2011-12-21  Nick Clifton  <nickc@redhat.com>
+
+	PR gas/13449
+	* config/tc-arm.c (create_unwind_entry): Zero allocated table
+	entries.
+
+ 
+diff --git a/gas/config/tc-arm.c b/gas/config/tc-arm.c
+index 865f430..02a63a6 100644
+--- a/gas/config/tc-arm.c
++++ b/gas/config/tc-arm.c
+@@ -19944,6 +19944,8 @@ create_unwind_entry (int have_data)
+ 
+   /* Allocate the table entry.	*/
+   ptr = frag_more ((size << 2) + 4);
++  /* PR 13449: Zero the table entries in case some of them are not used.  */
++  memset (ptr, 0, (size << 2) + 4);
+   where = frag_now_fix () - ((size << 2) + 4);
+ 
+   switch (unwind.personality_index)

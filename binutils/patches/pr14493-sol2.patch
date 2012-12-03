@@ -1,0 +1,394 @@
+Description: fix .SUNW_ldynsym section processing
+Bug: http://sourceware.org/bugzilla/show_bug.cgi?id=14493
+Index: binutils/bfd/ChangeLog.pr14493
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ binutils/bfd/ChangeLog.pr14493	2012-10-28 20:13:51.320735655 +0400
+@@ -0,0 +1,27 @@
++2012-08-24  H.J. Lu  <hongjiu.lu@intel.com>
++
++	PR binutils/14493
++	* Makefile.am (BFD32_BACKENDS): Add elf-sol2.lo.
++	(BFD64_BACKENDS): Likewise.
++	(BFD32_BACKENDS_CFILES): Add elf-sol2.c.
++	(BFD64_BACKENDS_CFILES): Likewise.
++
++	* configure.in: Add elf-sol2.lo to ELF x86 vectors.
++
++	* elf-sol2.c: New file.
++	* elf-sol2.h: Likewise.
++
++	* elf32-i386.c: Include "elf-sol2.h".
++	(elf_backend_section_processing): Defined to
++	_bfd_solaris_section_processing for Solaris.
++	(bfd_elf32_bfd_copy_private_section_data): Defined to
++	_bfd_solaris_copy_private_section_data for Solaris.
++
++	* elf64-x86-64.c: Include "elf-sol2.h".
++	(elf_backend_section_processing): Defined to
++	_bfd_solaris_section_processing for Solaris.
++	(bfd_elf64_bfd_copy_private_section_data): Defined to
++	_bfd_solaris_copy_private_section_data for Solaris.
++
++	* Makefile.in: Regenerated.
++	* configure: Likewise.
+Index: binutils/bfd/elf-sol2.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ binutils/bfd/elf-sol2.c	2012-10-28 20:13:51.322057305 +0400
+@@ -0,0 +1,66 @@
++/* Solaris support for ELF
++   Copyright 2012 Free Software Foundation, Inc.
++
++   This file is part of BFD, the Binary File Descriptor library.
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 3 of the License, or
++   (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 59 Temple Place - Suite 330, Boston,
++   MA 02111-1307, USA.  */
++
++#include "sysdep.h"
++#include "elf-sol2.h"
++
++bfd_boolean
++_bfd_solaris_section_processing (bfd *abfd, Elf_Internal_Shdr *hdr)
++{
++  asection *sec;
++
++  switch (hdr->sh_type)
++    {
++    case SHT_SUNW_symsort:
++      sec = bfd_get_section_by_name (abfd, ".SUNW_ldynsym");
++      if (sec != NULL)
++	hdr->sh_link = elf_section_data (sec)->this_idx;
++      break;
++
++    case SHT_SUNW_LDYNSYM:
++      sec = bfd_get_section_by_name (abfd, ".dynstr");
++      if (sec != NULL)
++	hdr->sh_link = elf_section_data (sec)->this_idx;
++      break;
++    }
++
++  return TRUE;
++}
++
++bfd_boolean
++_bfd_solaris_copy_private_section_data (bfd *ibfd,
++					asection *isec,
++					bfd *obfd,
++					asection *osec)
++{
++  Elf_Internal_Shdr *ihdr, *ohdr;
++
++  if (ibfd->xvec->flavour != bfd_target_elf_flavour
++      || obfd->xvec->flavour != bfd_target_elf_flavour)
++    return TRUE;
++
++  ihdr = &elf_section_data (isec)->this_hdr;
++  ohdr = &elf_section_data (osec)->this_hdr;
++
++  if (ihdr->sh_type == SHT_SUNW_LDYNSYM)
++    ohdr->sh_info = ihdr->sh_info;
++
++  return _bfd_elf_copy_private_section_data (ibfd, isec, obfd, osec);
++}
+Index: binutils/bfd/elf-sol2.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ binutils/bfd/elf-sol2.h	2012-10-28 20:13:51.323184009 +0400
+@@ -0,0 +1,31 @@
++/* Solaris support for ELF
++   Copyright 2012 Free Software Foundation, Inc.
++
++   This file is part of BFD, the Binary File Descriptor library.
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 3 of the License, or
++   (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 59 Temple Place - Suite 330, Boston,
++   MA 02111-1307, USA.  */
++
++#include "bfd.h"
++#include "elf-bfd.h"
++#include "elf/common.h"
++#include "elf/internal.h"
++
++extern bfd_boolean _bfd_solaris_section_processing
++  (bfd *, Elf_Internal_Shdr *);
++extern bfd_boolean _bfd_solaris_copy_private_section_data (bfd *,
++							   asection *,
++							   bfd *,
++							   asection *);
+Index: binutils/bfd/elf32-i386.c
+===================================================================
+--- binutils.orig/bfd/elf32-i386.c	2012-10-28 20:13:50.054150282 +0400
++++ binutils/bfd/elf32-i386.c	2012-10-28 20:13:51.330923786 +0400
+@@ -25,6 +25,7 @@
+ #include "bfdlink.h"
+ #include "libbfd.h"
+ #include "elf-bfd.h"
++#include "elf-sol2.h"
+ #include "elf-vxworks.h"
+ #include "bfd_stdint.h"
+ #include "objalloc.h"
+@@ -5045,8 +5046,17 @@
+ #undef elf_backend_want_plt_sym
+ #define elf_backend_want_plt_sym	1
+ 
++#undef elf_backend_section_processing
++#define elf_backend_section_processing _bfd_solaris_section_processing
++#undef bfd_elf32_bfd_copy_private_section_data
++#define bfd_elf32_bfd_copy_private_section_data \
++  _bfd_solaris_copy_private_section_data
++
+ #include "elf32-target.h"
+ 
++#undef elf_backend_section_processing
++#undef bfd_elf32_bfd_copy_private_section_data
++
+ /* Native Client support.  */
+ 
+ #undef	TARGET_LITTLE_SYM
+Index: binutils/include/elf/ChangeLog.pr14493
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ binutils/include/elf/ChangeLog.pr14493	2012-10-28 20:13:51.332684185 +0400
+@@ -0,0 +1,5 @@
++2012-08-24  H.J. Lu  <hongjiu.lu@intel.com>
++
++	PR binutils/14493
++	* common.h (SHT_SUNW_symsort): New.
++	(SHT_SUNW_LDYNSYM): Likewise.
+Index: binutils/include/elf/common.h
+===================================================================
+--- binutils.orig/include/elf/common.h	2012-10-28 20:12:10.686352145 +0400
++++ binutils/include/elf/common.h	2012-10-28 20:13:51.334384518 +0400
+@@ -486,6 +486,10 @@
+ /* #define SHT_HIUSER	0x8FFFFFFF    *//* Application-specific semantics */
+ #define SHT_HIUSER	0xFFFFFFFF	/* New value, defined in Oct 4, 1999 Draft */
+ 
++/* Solaris section types.  */
++#define SHT_SUNW_symsort	0x6ffffff1
++#define SHT_SUNW_LDYNSYM	0x6ffffff3
++
+ /* Values for section header, sh_flags field.  */
+ 
+ #define SHF_WRITE	(1 << 0)	/* Writable data during execution */
+Index: binutils/bfd/Makefile.am
+===================================================================
+--- binutils.orig/bfd/Makefile.am	2012-10-28 20:12:44.159380882 +0400
++++ binutils/bfd/Makefile.am	2012-10-28 20:13:51.336254354 +0400
+@@ -271,6 +271,7 @@
+ 	elf-ifunc.lo \
+ 	elf-m10200.lo \
+ 	elf-m10300.lo \
++	elf-sol2.lo \
+ 	elf-strtab.lo \
+ 	elf-vxworks.lo \
+ 	elf.lo \
+@@ -455,6 +456,7 @@
+ 	elf-ifunc.c \
+ 	elf-m10200.c \
+ 	elf-m10300.c \
++	elf-sol2.c \
+ 	elf-strtab.c \
+ 	elf-vxworks.c \
+ 	elf.c \
+@@ -601,6 +603,7 @@
+ 	coff-x86_64.lo \
+ 	coff64-rs6000.lo \
+ 	demo64.lo \
++	elf-sol2.lo \
+ 	elf32-ia64.lo \
+ 	elf32-score.lo \
+ 	elf32-score7.lo \
+@@ -637,6 +640,7 @@
+ 	coff-x86_64.c \
+ 	coff64-rs6000.c \
+ 	demo64.c \
++	elf-sol2.c \
+ 	elf32-score.c \
+ 	elf32-score7.c \
+ 	elf64-alpha.c \
+Index: binutils/bfd/elf64-x86-64.c
+===================================================================
+--- binutils.orig/bfd/elf64-x86-64.c	2012-10-28 20:13:50.058845562 +0400
++++ binutils/bfd/elf64-x86-64.c	2012-10-28 20:13:51.340757929 +0400
+@@ -26,6 +26,7 @@
+ #include "bfdlink.h"
+ #include "libbfd.h"
+ #include "elf-bfd.h"
++#include "elf-sol2.h"
+ #include "bfd_stdint.h"
+ #include "objalloc.h"
+ #include "hashtab.h"
+@@ -5024,8 +5025,17 @@
+ #undef elf_backend_want_plt_sym
+ #define elf_backend_want_plt_sym	    1
+ 
++#undef elf_backend_section_processing
++#define elf_backend_section_processing _bfd_solaris_section_processing
++#undef bfd_elf64_bfd_copy_private_section_data
++#define bfd_elf64_bfd_copy_private_section_data \
++  _bfd_solaris_copy_private_section_data
++
+ #include "elf64-target.h"
+ 
++#undef elf_backend_section_processing
++#undef bfd_elf64_bfd_copy_private_section_data
++
+ /* Intel L1OM support.  */
+ 
+ static bfd_boolean
+Index: binutils/bfd/configure.in
+===================================================================
+--- binutils.orig/bfd/configure.in	2012-10-28 20:12:10.686298088 +0400
++++ binutils/bfd/configure.in	2012-10-28 20:13:51.342860305 +0400
+@@ -707,11 +707,11 @@
+     bfd_elf32_hppa_nbsd_vec)	tb="$tb elf32-hppa.lo elf32.lo $elf" ;;
+     bfd_elf32_hppa_vec)		tb="$tb elf32-hppa.lo elf32.lo $elf" ;;
+     bfd_elf32_i370_vec)		tb="$tb elf32-i370.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_sol2_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_freebsd_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_nacl_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_vxworks_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_vec)		tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_sol2_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_freebsd_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_nacl_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_vxworks_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_vec)		tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
+     bfd_elf32_i860_little_vec)	tb="$tb elf32-i860.lo elf32.lo $elf" ;;
+     bfd_elf32_i860_vec)		tb="$tb elf32-i860.lo elf32.lo $elf" ;;
+     bfd_elf32_i960_vec)		tb="$tb elf32-i960.lo elf32.lo $elf" ;;
+@@ -841,14 +841,14 @@
+ 				tb="$tb elf64-mips.lo elf64.lo elfxx-mips.lo elf-vxworks.lo elf32.lo $elf ecofflink.lo"; target_size=64 ;;
+     bfd_elf64_tradlittlemips_vec | bfd_elf64_tradlittlemips_freebsd_vec)
+ 				tb="$tb elf64-mips.lo elf64.lo elfxx-mips.lo elf-vxworks.lo elf32.lo $elf ecofflink.lo"; target_size=64 ;;
+-    bfd_elf64_x86_64_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_x86_64_sol2_vec)  tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf32_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo elf32.lo $elf"; target_size=64 ;;
+-    bfd_elf64_l1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_l1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_k1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_k1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_x86_64_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_x86_64_sol2_vec)  tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf32_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo elf32.lo $elf"; target_size=64 ;;
++    bfd_elf64_l1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_l1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_k1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_k1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
+     bfd_mmo_vec)		tb="$tb mmo.lo" target_size=64 ;;
+     bfd_powerpc_pe_vec)         tb="$tb pe-ppc.lo peigen.lo cofflink.lo" ;;
+     bfd_powerpc_pei_vec)        tb="$tb pei-ppc.lo peigen.lo cofflink.lo" ;;
+Index: binutils/bfd/Makefile.in
+===================================================================
+--- binutils.orig/bfd/Makefile.in	2012-10-28 20:12:44.162885392 +0400
++++ binutils/bfd/Makefile.in	2012-10-28 20:17:03.409478912 +0400
+@@ -571,6 +571,7 @@
+ 	elf-ifunc.lo \
+ 	elf-m10200.lo \
+ 	elf-m10300.lo \
++	elf-sol2.lo \
+ 	elf-strtab.lo \
+ 	elf-vxworks.lo \
+ 	elf.lo \
+@@ -755,6 +756,7 @@
+ 	elf-ifunc.c \
+ 	elf-m10200.c \
+ 	elf-m10300.c \
++	elf-sol2.c \
+ 	elf-strtab.c \
+ 	elf-vxworks.c \
+ 	elf.c \
+@@ -902,6 +904,7 @@
+ 	coff-x86_64.lo \
+ 	coff64-rs6000.lo \
+ 	demo64.lo \
++	elf-sol2.lo \
+ 	elf32-ia64.lo \
+ 	elf32-score.lo \
+ 	elf32-score7.lo \
+@@ -938,6 +941,7 @@
+ 	coff-x86_64.c \
+ 	coff64-rs6000.c \
+ 	demo64.c \
++	elf-sol2.c \
+ 	elf32-score.c \
+ 	elf32-score7.c \
+ 	elf64-alpha.c \
+@@ -1331,6 +1335,7 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf-ifunc.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf-m10200.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf-m10300.Plo@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf-sol2.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf-strtab.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf-vxworks.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/elf.Plo@am__quote@
+Index: binutils/bfd/configure
+===================================================================
+--- binutils.orig/bfd/configure	2012-10-28 20:12:10.686210455 +0400
++++ binutils/bfd/configure	2012-10-28 20:13:51.356488706 +0400
+@@ -15208,11 +15208,11 @@
+     bfd_elf32_hppa_nbsd_vec)	tb="$tb elf32-hppa.lo elf32.lo $elf" ;;
+     bfd_elf32_hppa_vec)		tb="$tb elf32-hppa.lo elf32.lo $elf" ;;
+     bfd_elf32_i370_vec)		tb="$tb elf32-i370.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_sol2_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_freebsd_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_nacl_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_vxworks_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+-    bfd_elf32_i386_vec)		tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_sol2_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_freebsd_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_nacl_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_vxworks_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_vec)		tb="$tb elf32-i386.lo elf-ifunc.lo elf-sol2.lo elf-vxworks.lo elf32.lo $elf" ;;
+     bfd_elf32_i860_little_vec)	tb="$tb elf32-i860.lo elf32.lo $elf" ;;
+     bfd_elf32_i860_vec)		tb="$tb elf32-i860.lo elf32.lo $elf" ;;
+     bfd_elf32_i960_vec)		tb="$tb elf32-i960.lo elf32.lo $elf" ;;
+@@ -15342,14 +15342,14 @@
+ 				tb="$tb elf64-mips.lo elf64.lo elfxx-mips.lo elf-vxworks.lo elf32.lo $elf ecofflink.lo"; target_size=64 ;;
+     bfd_elf64_tradlittlemips_vec | bfd_elf64_tradlittlemips_freebsd_vec)
+ 				tb="$tb elf64-mips.lo elf64.lo elfxx-mips.lo elf-vxworks.lo elf32.lo $elf ecofflink.lo"; target_size=64 ;;
+-    bfd_elf64_x86_64_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_x86_64_sol2_vec)  tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf32_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo elf32.lo $elf"; target_size=64 ;;
+-    bfd_elf64_l1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_l1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_k1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
+-    bfd_elf64_k1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_x86_64_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_x86_64_sol2_vec)  tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf32_x86_64_vec)	tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo elf32.lo $elf"; target_size=64 ;;
++    bfd_elf64_l1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_l1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_k1om_vec)		tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
++    bfd_elf64_k1om_freebsd_vec) tb="$tb elf64-x86-64.lo elf-ifunc.lo elf-sol2.lo elf64.lo $elf"; target_size=64 ;;
+     bfd_mmo_vec)		tb="$tb mmo.lo" target_size=64 ;;
+     bfd_powerpc_pe_vec)         tb="$tb pe-ppc.lo peigen.lo cofflink.lo" ;;
+     bfd_powerpc_pei_vec)        tb="$tb pei-ppc.lo peigen.lo cofflink.lo" ;;
