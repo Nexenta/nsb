@@ -1,0 +1,31 @@
+set name=pkg.fmri value=pkg:/library/libffi@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/library/libffi6@$(ips-version) type=require
+depend fmri=pkg:/library/libffi6@$(ips-version) type=incorporate
+
+dir path=usr
+dir path=usr/lib
+dir path=usr/lib/$(MACH64)
+dir path=usr/lib/$(MACH64)/libffi-3.0.11
+dir path=usr/lib/$(MACH64)/libffi-3.0.11/include
+dir path=usr/lib/$(MACH64)/pkgconfig
+dir path=usr/share
+dir path=usr/share/info
+dir path=usr/share/man
+dir path=usr/share/man/man3
+file path=usr/lib/$(MACH64)/libffi-3.0.11/include/ffi.h
+file path=usr/lib/$(MACH64)/libffi-3.0.11/include/ffitarget.h
+file path=usr/lib/$(MACH64)/pkgconfig/libffi.pc
+file path=usr/share/info/libffi.info
+file path=usr/share/man/man3/ffi.3
+file path=usr/share/man/man3/ffi_call.3
+file path=usr/share/man/man3/ffi_prep_cif.3
+file path=usr/share/man/man3/ffi_prep_cif_var.3
+link path=usr/lib/$(MACH64)/libffi.so target=libffi.so.6.0.0
+link path=usr/lib/libffi.so target=libffi.so.6.0.0
+
