@@ -1,10 +1,14 @@
 set name=pkg.fmri value=pkg:/library/$(name)@$(ips-version)
-set name=pkg.summary value="$(summary), shared library, version $(so-version)"
+set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
 license $(license-file) license="$(license)"
 
-file path=usr/lib/$(mach64)/libv8.so
+depend fmri=pkg:/library/$(name)-$(so-version)@$(ips-version) type=require
+depend fmri=pkg:/library/$(name)-$(so-version)@$(ips-version) type=incorporate
+
+link path=usr/lib/$(mach64)/libv8.so \
+    target=$(libSoname)
 
 file include/v8-debug.h       path=usr/include/v8-debug.h
 file include/v8-preparser.h   path=usr/include/v8-preparser.h

@@ -1,0 +1,8 @@
+set name=pkg.fmri value=pkg:/library/$(name)-$(so-version)@$(ips-version)
+set name=pkg.summary value="$(summary), shared library, version $(so-version)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+license $(license-file) license="$(license)"
+
+file path=usr/lib/$(mach64)/$(libSoname)
+

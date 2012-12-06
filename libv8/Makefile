@@ -10,7 +10,8 @@ license      := BSD
 license-file := LICENSE.v8
 version      := 3.14.5
 name         := libv8
-libSoname    := libv8.so
+libSoname    := libv8.so.$(version)
+so-version   := $(version)
 
 build-depends += \
 	pkg:/developer/build/gyp
@@ -52,7 +53,7 @@ build-%-stamp: configure-%-stamp
 		CXX="$(CXX)" \
 		LINK="$(CXX)" \
 		library=shared \
-		soname_version= \
+		soname_version=$(so-version) \
 		werror=no \
 		$(v8arch).release
 	touch $@
