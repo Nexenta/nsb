@@ -1,0 +1,14 @@
+set name=pkg.fmri value=pkg:/library/$(name)4@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+license $(license-file) license="$(license)"
+
+file path=usr/lib/$(MACH64)/libmpfr.so.4.1.1
+file path=usr/lib/libmpfr.so.4.1.1
+link path=usr/lib/$(MACH64)/libmpfr.so.4 target=libmpfr.so.4.1.1
+link path=usr/lib/libmpfr.so.4 target=libmpfr.so.4.1.1
+
+# Transitional symlinks:
+link path=usr/lib/libmpfr.so.1 target=libmpfr.so.4
+link path=usr/lib/$(MACH64)/libmpfr.so.1 target=libmpfr.so.4

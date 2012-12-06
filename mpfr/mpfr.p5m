@@ -5,6 +5,9 @@ set name=info.source-url value="$(download)"
 
 license $(license-file) license="$(license)"
 
+depend fmri=pkg:/library/$(name)4@$(ips-version) type=require
+depend fmri=pkg:/library/$(name)4@$(ips-version) type=incorporate
+
 dir path=usr
 dir path=usr/include
 dir path=usr/lib
@@ -13,14 +16,7 @@ dir path=usr/share
 dir path=usr/share/info
 file path=usr/include/mpf2mpfr.h
 file path=usr/include/mpfr.h
-file path=usr/lib/$(MACH64)/libmpfr.so.4.1.1
-file path=usr/lib/libmpfr.so.4.1.1
 file path=usr/share/info/mpfr.info
-link path=usr/lib/$(MACH64)/libmpfr.so target=libmpfr.so.4.1.1
-link path=usr/lib/$(MACH64)/libmpfr.so.4 target=libmpfr.so.4.1.1
-link path=usr/lib/libmpfr.so target=libmpfr.so.4.1.1
-link path=usr/lib/libmpfr.so.4 target=libmpfr.so.4.1.1
 
-# Transitional links:
-link path=usr/lib/libmpfr.so.1 target=libmpfr.so.4
-link path=usr/lib/$(MACH64)/libmpfr.so.1 target=libmpfr.so.4
+link path=usr/lib/$(MACH64)/libmpfr.so target=libmpfr.so.4.1.1
+link path=usr/lib/libmpfr.so target=libmpfr.so.4.1.1
