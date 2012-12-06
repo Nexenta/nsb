@@ -28,6 +28,8 @@ set name=info.upstream-url value="$(home)"
 set name=info.source_url value="$(download)"
 license $(license-file)  license="$(license)"
 
+depend fmri=pkg:/library/libunistring0@$(ips-version) type=require
+depend fmri=pkg:/library/libunistring0@$(ips-version) type=incorporate
 
 dir path=usr
 dir path=usr/include
@@ -57,8 +59,6 @@ file path=usr/include/unicase.h
 file path=usr/include/uniwidth.h
 file path=usr/include/uniwbrk.h
 file path=usr/include/uniconv.h
-file path=usr/lib/libunistring.so.0.1.2
-file path=usr/lib/$(MACH64)/libunistring.so.0.1.2
 file path=usr/share/doc/libunistring/libunistring_3.html
 file path=usr/share/doc/libunistring/libunistring_10.html
 file path=usr/share/doc/libunistring/libunistring_7.html
@@ -82,6 +82,4 @@ file path=usr/share/doc/libunistring/libunistring_16.html
 file path=usr/share/doc/libunistring/libunistring_9.html
 file path=usr/share/info/libunistring.info
 link path=usr/lib/libunistring.so target=libunistring.so.0.1.2
-link path=usr/lib/libunistring.so.0 target=libunistring.so.0.1.2
 link path=usr/lib/$(MACH64)/libunistring.so target=libunistring.so.0.1.2
-link path=usr/lib/$(MACH64)/libunistring.so.0 target=libunistring.so.0.1.2

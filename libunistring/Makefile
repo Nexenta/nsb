@@ -5,7 +5,7 @@ include /usr/share/cibs/rules/32.mk
 include /usr/share/cibs/rules/64.mk
 
 
-summary := manipulate Unicode strings and  C strings according to the Unicode standard.
+summary := manipulate Unicode strings and C strings according to the Unicode standard.
 license := LGPL
 license-file := COPYING.LIB
 

@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/libunistring0@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source_url value="$(download)"
+license $(license-file)  license="$(license)"
+
+file path=usr/lib/libunistring.so.0.1.2
+file path=usr/lib/$(MACH64)/libunistring.so.0.1.2
+link path=usr/lib/libunistring.so.0 target=libunistring.so.0.1.2
+link path=usr/lib/$(MACH64)/libunistring.so.0 target=libunistring.so.0.1.2
+
