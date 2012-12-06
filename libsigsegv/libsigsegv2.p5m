@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/$(name)2@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file)  license="$(license)"
+
+file path=usr/lib/$(MACH64)/libsigsegv.so.2.0.3
+file path=usr/lib/libsigsegv.so.2.0.3
+link path=usr/lib/$(MACH64)/libsigsegv.so.2 target=libsigsegv.so.2.0.3
+link path=usr/lib/libsigsegv.so.2 target=libsigsegv.so.2.0.3
