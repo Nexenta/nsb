@@ -25,9 +25,11 @@
 set name=pkg.fmri value=pkg:/library/c-ares@$(ips-version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
-set name=info.source_url value="$(download)"
+set name=info.source-url value="$(download)"
 license c-ares.license  license="$(license)"
 
+depend fmri=pkg:/library/c-ares2@$(ips-version) type=require
+depend fmri=pkg:/library/c-ares2@$(ips-version) type=incorporate
 
 dir path=usr
 dir path=usr/lib
@@ -84,12 +86,8 @@ file path=usr/include/ares_dns.h
 file path=usr/include/ares_version.h
 file path=usr/include/ares.h
 
-$(build32)file path=usr/lib/libcares.so.2.0.0
 $(build32)file path=usr/lib/pkgconfig/libcares.pc
 $(build32)link path=usr/lib/libcares.so target=libcares.so.2.0.0
-$(build32)link path=usr/lib/libcares.so.2 target=libcares.so.2.0.0
 
-$(build64)file path=usr/lib/$(MACH64)/libcares.so.2.0.0
 $(build64)file path=usr/lib/$(MACH64)/pkgconfig/libcares.pc
 $(build64)link path=usr/lib/$(MACH64)/libcares.so target=libcares.so.2.0.0
-$(build64)link path=usr/lib/$(MACH64)/libcares.so.2 target=libcares.so.2.0.0

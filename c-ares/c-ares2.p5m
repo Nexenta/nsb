@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/c-ares2@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license c-ares.license  license="$(license)"
+
+$(build32)file path=usr/lib/libcares.so.2.0.0
+$(build32)link path=usr/lib/libcares.so.2 target=libcares.so.2.0.0
+$(build64)file path=usr/lib/$(MACH64)/libcares.so.2.0.0
+$(build64)link path=usr/lib/$(MACH64)/libcares.so.2 target=libcares.so.2.0.0
