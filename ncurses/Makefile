@@ -44,7 +44,7 @@ configure-env.32 = \
 	PKG_CONFIG_LIBDIR="$(libdir.32)/pkgconfig"
 configure-options.32 = \
 	--without-manpages \
-	--without-progs
+	--with-progs
 
 configure-env.64 = \
 	PKG_CONFIG_LIBDIR="$(libdir.64)/pkgconfig"

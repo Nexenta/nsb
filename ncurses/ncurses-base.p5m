@@ -6,6 +6,9 @@ set name=info.source-url value="$(download)"
 license $(license-file) license="$(license)"
 
 <transform file path=etc/.* -> set action.hash %(path) >
+
+
+# NOTE: moving from /etc into /lib
 <transform file path=etc/.* -> edit path etc/ lib/ >
 
 file path=etc/terminfo/E/Eterm 
