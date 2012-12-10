@@ -25,8 +25,11 @@
 set name=pkg.fmri value=pkg:/library/libpgm@$(ips-version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
-set name=info.source_url value="$(download)"
+set name=info.source-url value="$(download)"
 license $(license-file)  license="$(license)"
+
+depend fmri=pkg:/library/libpgm-5.1-0@$(ips-version) type=require
+depend fmri=pkg:/library/libpgm-5.1-0@$(ips-version) type=incorporate
 
 dir path=usr
 dir path=usr/lib
@@ -36,9 +39,7 @@ dir path=usr/lib/pkgconfig
 dir path=usr/include
 dir path=usr/include/pgm-5.1
 dir path=usr/include/pgm-5.1/pgm
-file path=usr/lib/$(MACH64)/libpgm-5.1.so.0.0.118
 file path=usr/lib/$(MACH64)/pkgconfig/openpgm-5.1.pc
-file path=usr/lib/libpgm-5.1.so.0.0.118
 file path=usr/lib/pkgconfig/openpgm-5.1.pc
 file path=usr/include/pgm-5.1/pgm/msgv.h
 file path=usr/include/pgm-5.1/pgm/time.h
@@ -62,7 +63,5 @@ file path=usr/include/pgm-5.1/pgm/socket.h
 file path=usr/include/pgm-5.1/pgm/gsi.h
 file path=usr/include/pgm-5.1/pgm/mem.h
 file path=usr/include/pgm-5.1/pgm/if.h
-link path=usr/lib/libpgm-5.1.so.0 target=libpgm-5.1.so.0.0.118
-link path=usr/lib/$(MACH64)/libpgm-5.1.so.0 target=libpgm-5.1.so.0.0.118
 link path=usr/lib/$(MACH64)/libpgm.so target=libpgm-5.1.so.0.0.118
 link path=usr/lib/libpgm.so target=libpgm-5.1.so.0.0.118
