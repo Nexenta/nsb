@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/$(name)6@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/lib/$(MACH64)/libhistory.so.6
+file path=usr/lib/$(MACH64)/libreadline.so.6
+file path=usr/lib/libhistory.so.6
+file path=usr/lib/libreadline.so.6

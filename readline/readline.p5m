@@ -5,6 +5,9 @@ set name=info.source-url value="$(download)"
 
 license $(license-file) license="$(license)"
 
+depend fmri=pkg:/library/$(name)6@$(ips-version) type=require
+depend fmri=pkg:/library/$(name)6@$(ips-version) type=incorporate
+
 dir path=usr
 dir path=usr/bin
 dir path=usr/include
@@ -23,10 +26,6 @@ file path=usr/include/readline/rlconf.h
 file path=usr/include/readline/rlstdc.h
 file path=usr/include/readline/rltypedefs.h
 file path=usr/include/readline/tilde.h
-file path=usr/lib/$(MACH64)/libhistory.so.6
-file path=usr/lib/$(MACH64)/libreadline.so.6
-file path=usr/lib/libhistory.so.6
-file path=usr/lib/libreadline.so.6
 file path=usr/share/info/history.info
 file path=usr/share/info/readline.info
 file path=usr/share/info/rluserman.info
