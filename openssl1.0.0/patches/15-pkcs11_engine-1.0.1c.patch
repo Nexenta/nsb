@@ -72,7 +72,6 @@ diff -dubr source/Configure ppp/Configure
  	s/^SHLIB_VERSION_NUMBER=.*/SHLIB_VERSION_NUMBER=$shlib_version_number/;
  	s/^SHLIB_VERSION_HISTORY=.*/SHLIB_VERSION_HISTORY=$shlib_version_history/;
  	s/^SHLIB_MAJOR=.*/SHLIB_MAJOR=$shlib_major/;
-Only in ppp/: Configure.orig
 diff -dubr source/crypto/engine/eng_all.c ppp/crypto/engine/eng_all.c
 --- source/crypto/engine/eng_all.c	2011-08-10 22:53:13.000000000 +0400
 +++ ppp/crypto/engine/eng_all.c	2012-10-30 13:43:17.300794119 +0400
@@ -86,7 +85,6 @@ diff -dubr source/crypto/engine/eng_all.c ppp/crypto/engine/eng_all.c
  #ifndef OPENSSL_NO_STATIC_ENGINE
  #ifndef OPENSSL_NO_HW
  #ifndef OPENSSL_NO_HW_4758_CCA
-Only in ppp/crypto/engine: eng_all.c.orig
 diff -dubr source/crypto/engine/engine.h ppp/crypto/engine/engine.h
 --- source/crypto/engine/engine.h	2011-08-10 22:53:13.000000000 +0400
 +++ ppp/crypto/engine/engine.h	2012-10-30 13:46:54.858339430 +0400
@@ -98,7 +96,6 @@ diff -dubr source/crypto/engine/engine.h ppp/crypto/engine/engine.h
  void ENGINE_load_rsax(void);
  void ENGINE_load_rdrand(void);
  void ENGINE_load_builtin_engines(void);
-Only in ppp/crypto/engine: engine.h.orig
 diff -dubr source/crypto/engine/Makefile ppp/crypto/engine/Makefile
 --- source/crypto/engine/Makefile	2011-08-14 17:47:27.000000000 +0400
 +++ ppp/crypto/engine/Makefile	2012-10-30 13:48:02.183707468 +0400
@@ -117,18 +114,6 @@ diff -dubr source/crypto/engine/Makefile ppp/crypto/engine/Makefile
  	eng_rsax.o eng_rdrand.o
  
  SRC= $(LIBSRC)
-Only in ppp/crypto/engine: Makefile.orig
-diff -dubr source/include/openssl/engine.h ppp/include/openssl/engine.h
---- source/include/openssl/engine.h	2011-08-10 22:53:13.000000000 +0400
-+++ ppp/include/openssl/engine.h	2012-10-30 13:46:54.858339430 +0400
-@@ -351,6 +351,7 @@
- #endif
- #endif
- void ENGINE_load_cryptodev(void);
-+void ENGINE_load_pk11(void);
- void ENGINE_load_rsax(void);
- void ENGINE_load_rdrand(void);
- void ENGINE_load_builtin_engines(void);
 diff -dubr source/Makefile.org ppp/Makefile.org
 --- source/Makefile.org	2012-04-22 17:25:19.000000000 +0400
 +++ ppp/Makefile.org	2012-10-30 13:43:17.299024078 +0400
