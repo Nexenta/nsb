@@ -1,19 +1,21 @@
-set name=pkg.fmri value=pkg:/runtime/$(name)@$(ips-version)
-set name=pkg.summary value="$(summary)"
+set name=pkg.fmri value=pkg:/developer/$(name)@$(ips-version)
+set name=pkg.summary value="$(summary), developer files"
+set name=pkg.description value="Contain Node.js header and node-waf utility. \
+Install this package if you want to write Node.js bingings"
 set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
+
 license $(license-file) license="$(license)"
 
+# FIXME: Versions ?
+depend fmri=pkg:/library/libv8 type=require
+depend fmri=pkg:/library/c-ares type=require
+depend fmri=pkg:/library/libev type=require
+depend fmri=pkg:/library/openssl type=require
 
-# Runtime:
-dir path=usr/lib/nodejs
-file usr/bin/node path=usr/bin/nodejs
-link path=usr/bin/node target=nodejs
-file usr/share/man/man1/node.1 path=usr/share/man/man1/nodejs.1
-link path=usr/share/man/man1/node.1 target=nodejs.1
+depend fmri=pkg:/runtime/nodejs@$(ips-version) type=require
+depend fmri=pkg:/runtime/nodejs@$(ips-version) type=incorporate
 
-
-# Development:
 
 # Move headers into usr/include/nodejs:
 <transform dir -> edit path /node /nodejs >

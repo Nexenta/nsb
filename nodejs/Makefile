@@ -9,19 +9,19 @@ include /usr/share/cibs/rules/autotools.mk
 # Must run from the current directory:
 configure := ./configure
 
-# Flock wrapper even does not return erro on failure:
+# Flock wrapper even does not return error on failure:
 export LINK = $(CXX)
 
 name := nodejs
-version := 0.8.14
+version := 0.8.15
 home := http://nodejs.org
 archive := node-v$(version).tar.gz
 download := http://nodejs.org/dist/v$(version)/$(archive)
 checksum := \
-     md5:284fd2c7578064c339d9cf6a3a475ac7 \
-    sha1:47a1186004f6ce5e25a8555429d72b15519bc7f1 \
-  sha256:e5ce2aadb4df3ea4ca7a021106ffe09d286474476454038e9ed0135eac18e6d0 \
-    size:11861540
+     md5:6cb31180b07475db103e694f65e8bb9b \
+    sha1:a7874cde1a87497992f1f8ea0fdaa760f617a94f \
+  sha256:1758639c6df3e081fe26585472d0f1961c5703b44ba6c57ecdf66a4c015792b1 \
+    size:11867033
 
 summary := event-based server-side javascript engine
 license := BSD
@@ -31,7 +31,7 @@ build-depends += \
 	library/libv8 \
 	library/c-ares \
 	library/libev \
-	library/openssl-headers
+	library/openssl
 
 # Node.js configure is a autotools lookalike confuserator:
 configure-options := \
