@@ -1,0 +1,12 @@
+set name=pkg.fmri value=pkg:/library/libbz2-1.0@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file $(builddir.32)/libbz2.so.1.0.4 path=usr/lib/libbz2.so.1.0.4
+file $(builddir.64)/libbz2.so.1.0.4 path=usr/lib/$(mach64)/libbz2.so.1.0.4
+
+link target=libbz2.so.1.0.4 path=usr/lib/libbz2.so.1.0
+link target=libbz2.so.1.0.4 path=usr/lib/$(mach64)/libbz2.so.1.0

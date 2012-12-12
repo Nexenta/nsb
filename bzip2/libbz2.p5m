@@ -1,0 +1,14 @@
+set name=pkg.fmri value=pkg:/library/libbz2@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/library/libbz2-1.0@$(ips-version) type=require
+depend fmri=pkg:/library/libbz2-1.0@$(ips-version) type=incorporate
+
+file bzlib.h path=usr/include/bzlib.h
+link target=libbz2.so.1.0 path=usr/lib/libbz2.so
+link target=libbz2.so.1.0 path=usr/lib/$(mach64)/libbz2.so
+

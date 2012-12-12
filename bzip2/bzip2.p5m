@@ -1,0 +1,29 @@
+set name=pkg.fmri value=pkg:/compress/bzip2@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+
+# XXX 64-bit is default
+file $(builddir.64)/bzip2 path=usr/bin/bzip2
+file $(builddir.64)/bzip2recover path=usr/bin/bzip2recover
+link target=bzip2 path=usr/bin/bzcat
+link target=bzip2 path=usr/bin/bunzip2
+
+# Man pages are from source directory:
+file bzip2.1 path=usr/share/man/man1/bzip2.1
+link target=bzip2.1 path=usr/share/man/man1/bzcat.1
+link target=bzip2.1 path=usr/share/man/man1/bunzip2.1
+link target=bzip2.1 path=usr/share/man/man1/bzip2recover.1
+
+
+# These are shell scripts from source dir:
+file bzgrep path=usr/bin/bzgrep
+file bzmore path=usr/bin/bzmore
+file bzmore.1 path=usr/share/man/man1/bzmore.1
+link target=bzgrep path=usr/bin/bzfgrep
+link target=bzgrep path=usr/bin/bzegrep
+link target=bzmore path=usr/bin/bzless
+link target=bzmore.1 path=usr/share/man/man1/bzless.1
