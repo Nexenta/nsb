@@ -1,0 +1,9 @@
+set name=pkg.fmri value=pkg:/database/sqlite3@$(ips-version)
+set name=pkg.summary value="Command line interface for SQLite 3"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/share/man/man1/sqlite3.1
+file $(protodir.64)/usr/bin/sqlite3 path=usr/bin/sqlite3
