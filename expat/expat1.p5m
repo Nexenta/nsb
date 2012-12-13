@@ -1,0 +1,11 @@
+set name=pkg.fmri value=pkg:/library/expat1@$(ips-version)
+set name=pkg.summary value="$(summary), shared library"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/lib/$(mach64)/libexpat.so.1.6.0
+link path=usr/lib/$(mach64)/libexpat.so.1 target=libexpat.so.1.6.0
+file path=usr/lib/libexpat.so.1.6.0
+link path=usr/lib/libexpat.so.1 target=libexpat.so.1.6.0
