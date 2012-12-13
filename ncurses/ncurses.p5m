@@ -8,10 +8,8 @@ license $(license-file) license="$(license)"
 depend fmri=pkg:/library/$(name)5@$(ips-version) type=require
 depend fmri=pkg:/library/$(name)5@$(ips-version) type=incorporate
 
-dir path=usr/include
-dir path=usr/lib/$(MACH64)
-dir path=usr/lib/$(MACH64)/pkgconfig
-dir path=usr/lib/pkgconfig
+file path=usr/bin/ncurses5-config facet.devel=true
+file path=usr/bin/tic facet.devel=true
 file path=usr/include/curses.h
 file path=usr/include/cursesapp.h
 file path=usr/include/cursesf.h
@@ -43,6 +41,8 @@ file path=usr/lib/pkgconfig/ncurses.pc
 file path=usr/lib/pkgconfig/panel.pc
 file path=usr/lib/pkgconfig/tic.pc
 file path=usr/lib/pkgconfig/tinfo.pc
+file path=usr/share/man/man1/ncurses5-config.1 facet.devel=true
+file path=usr/share/man/man1/tic.1m facet.devel=true
 link path=usr/include/ncurses.h target=curses.h
 link path=usr/lib/$(MACH64)/libcurses.so target=libncurses.so.5.9
 link path=usr/lib/$(MACH64)/libform.so target=libform.so.5
