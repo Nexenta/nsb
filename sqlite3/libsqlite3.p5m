@@ -1,12 +1,12 @@
-set name=pkg.fmri value=pkg:/library/sqlite3@$(ips-version)
+set name=pkg.fmri value=pkg:/library/libsqlite3@$(ips-version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
 
 license $(license-file) license="$(license)"
 
-depend fmri=pkg:/library/sqlite3-0@$(ips-version) type=require
-depend fmri=pkg:/library/sqlite3-0@$(ips-version) type=incorporate
+depend fmri=pkg:/library/libsqlite3-0@$(ips-version) type=require
+depend fmri=pkg:/library/libsqlite3-0@$(ips-version) type=incorporate
 
 file path=usr/lib/pkgconfig/sqlite3.pc
 link path=usr/lib/$(mach64)/libsqlite3.so target=libsqlite3.so.0
