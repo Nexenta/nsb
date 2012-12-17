@@ -1,0 +1,14 @@
+set name=pkg.fmri value=pkg:/library/libgdbm@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/library/libgdbm4@$(ips-version) type=require
+depend fmri=pkg:/library/libgdbm4@$(ips-version) type=incorporate
+
+file path=usr/include/gdbm.h
+file path=usr/share/info/gdbm.info
+file path=usr/share/man/man3/gdbm.3
+link path=usr/lib/$(mach64)/libgdbm.so target=libgdbm.so.4
