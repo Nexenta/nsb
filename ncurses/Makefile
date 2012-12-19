@@ -44,10 +44,27 @@ configure-env.32 = \
 	PKG_CONFIG_LIBDIR="$(libdir.32)/pkgconfig"
 configure-options.32 = \
 	--without-manpages \
-	--with-progs
+	--without-progs
+
+# We need only 32-bit libs:
+build-32-stamp: target = libs
+install-32-stamp: target = install.libs
 
 configure-env.64 = \
 	PKG_CONFIG_LIBDIR="$(libdir.64)/pkgconfig"
 configure-options.64 = \
 	--with-progs
+
+
+# Variant with wide-character support.
+# 64-bit only
+$(eval $(call add-variant,wide))
+%-wide-stamp: bits = 64
+configure-options.wide = \
+	--enable-widec \
+	--disable-overwrite \
+
+# We need only libs:
+build-wide-stamp: target = libs
+install-wide-stamp: target = install.libs
 
