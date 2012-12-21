@@ -1,0 +1,55 @@
+set name=pkg.fmri value=pkg:/compress/xz@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license COPYING license="GPL v2+, Public Domain"
+license COPYING.GPLv2 license="GPL v2"
+license COPYING.GPLv3 license="GPL v3"
+
+file path=usr/bin/lzmadec
+file path=usr/bin/lzmainfo
+file path=usr/bin/xz
+file path=usr/bin/xzdec
+file path=usr/bin/xzdiff
+file path=usr/bin/xzgrep
+file path=usr/bin/xzless
+file path=usr/bin/xzmore
+file path=usr/share/man/man1/lzmainfo.1
+file path=usr/share/man/man1/xz.1
+file path=usr/share/man/man1/xzdec.1
+file path=usr/share/man/man1/xzdiff.1
+file path=usr/share/man/man1/xzgrep.1
+file path=usr/share/man/man1/xzless.1
+file path=usr/share/man/man1/xzmore.1
+link path=usr/bin/lzcat target=xz
+link path=usr/bin/lzcmp target=xzdiff
+link path=usr/bin/lzdiff target=xzdiff
+link path=usr/bin/lzegrep target=xzgrep
+link path=usr/bin/lzfgrep target=xzgrep
+link path=usr/bin/lzgrep target=xzgrep
+link path=usr/bin/lzless target=xzless
+link path=usr/bin/lzma target=xz
+link path=usr/bin/lzmore target=xzmore
+link path=usr/bin/unlzma target=xz
+link path=usr/bin/unxz target=xz
+link path=usr/bin/xzcat target=xz
+link path=usr/bin/xzcmp target=xzdiff
+link path=usr/bin/xzegrep target=xzgrep
+link path=usr/bin/xzfgrep target=xzgrep
+link path=usr/share/man/man1/lzcat.1 target=xz.1
+link path=usr/share/man/man1/lzcmp.1 target=xzdiff.1
+link path=usr/share/man/man1/lzdiff.1 target=xzdiff.1
+link path=usr/share/man/man1/lzegrep.1 target=xzgrep.1
+link path=usr/share/man/man1/lzfgrep.1 target=xzgrep.1
+link path=usr/share/man/man1/lzgrep.1 target=xzgrep.1
+link path=usr/share/man/man1/lzless.1 target=xzless.1
+link path=usr/share/man/man1/lzma.1 target=xz.1
+link path=usr/share/man/man1/lzmadec.1 target=xzdec.1
+link path=usr/share/man/man1/lzmore.1 target=xzmore.1
+link path=usr/share/man/man1/unlzma.1 target=xz.1
+link path=usr/share/man/man1/unxz.1 target=xz.1
+link path=usr/share/man/man1/xzcat.1 target=xz.1
+link path=usr/share/man/man1/xzcmp.1 target=xzdiff.1
+link path=usr/share/man/man1/xzegrep.1 target=xzgrep.1
+link path=usr/share/man/man1/xzfgrep.1 target=xzgrep.1

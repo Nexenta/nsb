@@ -1,0 +1,27 @@
+set name=pkg.fmri value=pkg:/library/liblzma@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license COPYING license="Public Domain"
+
+depend fmri=pkg:/library/liblzma5@$(ips-version) type=require
+depend fmri=pkg:/library/liblzma5@$(ips-version) type=incorporate
+
+file path=usr/include/lzma.h
+file path=usr/include/lzma/base.h
+file path=usr/include/lzma/bcj.h
+file path=usr/include/lzma/block.h
+file path=usr/include/lzma/check.h
+file path=usr/include/lzma/container.h
+file path=usr/include/lzma/delta.h
+file path=usr/include/lzma/filter.h
+file path=usr/include/lzma/hardware.h
+file path=usr/include/lzma/index.h
+file path=usr/include/lzma/index_hash.h
+file path=usr/include/lzma/lzma.h
+file path=usr/include/lzma/stream_flags.h
+file path=usr/include/lzma/version.h
+file path=usr/include/lzma/vli.h
+file path=usr/lib/$(mach64)/pkgconfig/liblzma.pc
+link path=usr/lib/$(mach64)/liblzma.so target=liblzma.so.5
