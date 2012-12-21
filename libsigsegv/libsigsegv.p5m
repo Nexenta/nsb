@@ -9,5 +9,4 @@ depend fmri=pkg:/library/$(name)2@$(ips-version) type=require
 depend fmri=pkg:/library/$(name)2@$(ips-version) type=incorporate
 
 file path=usr/include/sigsegv.h
-link path=usr/lib/$(MACH64)/libsigsegv.so target=libsigsegv.so.2.0.3
-link path=usr/lib/libsigsegv.so target=libsigsegv.so.2.0.3
+link path=usr/lib/$(MACH64)/libsigsegv.so target=libsigsegv.so.2
