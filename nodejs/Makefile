@@ -31,6 +31,7 @@ build-depends += \
 	library/libv8 \
 	library/c-ares \
 	library/libev \
+	library/zlib \
 	library/openssl
 
 # Node.js configure is a autotools lookalike confuserator:

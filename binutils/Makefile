@@ -13,7 +13,8 @@ prefix = /usr/gnu
 PATH := /usr/perl5/bin:$(PATH)
 
 build-depends += \
-	flex
+	flex \
+	library/zlib
 
 name     := binutils
 home     := http://www.gnu.org/software/$(name)/
