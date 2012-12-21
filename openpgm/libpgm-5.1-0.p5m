@@ -5,7 +5,5 @@ set name=info.source-url value="$(download)"
 
 license $(license-file)  license="$(license)"
 
-file path=usr/lib/$(MACH64)/libpgm-5.1.so.0.0.118
-file path=usr/lib/libpgm-5.1.so.0.0.118
-link path=usr/lib/libpgm-5.1.so.0 target=libpgm-5.1.so.0.0.118
-link path=usr/lib/$(MACH64)/libpgm-5.1.so.0 target=libpgm-5.1.so.0.0.118
+file path=usr/lib/$(mach64)/libpgm-5.1.so.0.0.118
+link path=usr/lib/$(mach64)/libpgm-5.1.so.0 target=libpgm-5.1.so.0.0.118

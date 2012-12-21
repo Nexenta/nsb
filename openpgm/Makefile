@@ -3,7 +3,6 @@ include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/autoreconf.mk
 include /usr/share/cibs/rules/autotools.mk
-include /usr/share/cibs/rules/32.mk
 include /usr/share/cibs/rules/64.mk
 
 configure := $(sourcedir)/openpgm/pgm/configure
