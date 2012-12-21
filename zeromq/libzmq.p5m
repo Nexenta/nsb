@@ -1,18 +1,17 @@
-set name=pkg.fmri value=pkg:/library/zeromq@$(ips-version)
+set name=pkg.fmri value=pkg:/library/libzmq@$(ips-version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
 
 license $(license-file)  license="$(license)"
 
-depend fmri=pkg:/library/zeromq1@$(ips-version) type=require
-depend fmri=pkg:/library/zeromq1@$(ips-version) type=incorporate
+depend fmri=pkg:/library/libzmq1@$(ips-version) type=require
+depend fmri=pkg:/library/libzmq1@$(ips-version) type=incorporate
 
 file path=usr/include/zmq.h
 file path=usr/include/zmq.hpp
 file path=usr/include/zmq_utils.h
-file path=usr/lib/$(MACH64)/pkgconfig/libzmq.pc
-file path=usr/lib/pkgconfig/libzmq.pc
+file path=usr/lib/$(mach64)/pkgconfig/libzmq.pc
 file path=usr/share/man/man3/zmq_bind.3
 file path=usr/share/man/man3/zmq_close.3
 file path=usr/share/man/man3/zmq_connect.3
@@ -43,5 +42,4 @@ file path=usr/share/man/man7/zmq_inproc.7
 file path=usr/share/man/man7/zmq_ipc.7
 file path=usr/share/man/man7/zmq_pgm.7
 file path=usr/share/man/man7/zmq_tcp.7
-link path=usr/lib/$(MACH64)/libzmq.so target=libzmq.so.1.0.1
-link path=usr/lib/libzmq.so target=libzmq.so.1.0.1
+link path=usr/lib/$(mach64)/libzmq.so target=libzmq.so.1
