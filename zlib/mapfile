@@ -1,0 +1,111 @@
+# SUNW* symbols are here for hysterical raisins
+
+
+SUNWprivate {
+    global:
+        inflateBackInit_;
+    local: *;
+};
+
+SUNW_1.1 {
+    global:
+        adler32;
+        compress;
+        compress2;
+        crc32;
+        deflate;
+        deflateCopy;
+        deflateEnd;
+        deflateInit2_;
+        deflateInit_;
+        deflateParams;
+        deflateReset;
+        deflateSetDictionary;
+        get_crc_table;
+        gzclose;
+        gzdopen;
+        gzeof;
+        gzerror;
+        gzflush;
+        gzgetc;
+        gzgets;
+        gzopen;
+        gzprintf;
+        gzputc;
+        gzputs;
+        gzread;
+        gzrewind;
+        gzseek;
+        gzsetparams;
+        gztell;
+        gzwrite;
+        inflate;
+        inflateEnd;
+        inflateInit2_;
+        inflateInit_;
+        inflateReset;
+        inflateSetDictionary;
+        inflateSync;
+        inflateSyncPoint;
+        uncompress;
+        zError;
+        zlibVersion;
+};
+
+SUNW_1.2 {
+    global:
+        adler32_combine;
+        compressBound;
+        crc32_combine;
+        deflateBound;
+        deflatePrime;
+        deflateSetHeader;
+        deflateTune;
+        gzclearerr;
+        gzdirect;
+        gzungetc;
+        inflateBack;
+        inflateBackEnd;
+        inflateCopy;
+        inflateGetHeader;
+        inflatePrime;
+        zlibCompileFlags;
+} SUNW_1.1;
+
+ZLIB_1.2.3.3 {
+    global:
+        adler32_combine64;
+        crc32_combine64;
+        gzopen64;
+        gzseek64;
+        gztell64;
+        inflateUndermine;
+} SUNW_1.2;
+
+ZLIB_1.2.3.4 {
+    global:
+        inflateReset2;
+        inflateMark;
+} ZLIB_1.2.3.3;
+
+ZLIB_1.2.3.5 {
+    global:
+        gzbuffer;
+        gzoffset;
+        gzoffset64;
+        gzclose_r;
+        gzclose_w;
+} ZLIB_1.2.3.4;
+
+ZLIB_1.2.5.1 {
+    global:
+        deflatePending;
+} ZLIB_1.2.3.5;
+
+ZLIB_1.2.5.2 {
+    global:
+        deflateResetKeep;
+        gzgetc_;
+        inflateResetKeep;
+} ZLIB_1.2.5.1;
+
