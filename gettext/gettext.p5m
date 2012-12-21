@@ -41,14 +41,14 @@ file path=usr/gnu/bin/gettextize
 file path=usr/gnu/bin/msginit
 file path=usr/gnu/bin/msgcomm
 file path=usr/gnu/bin/msguniq
-file path=usr/gnu/lib/$(MACH64)/libgettextpo.a
-file path=usr/gnu/lib/$(MACH64)/libgettextlib-0.18.1.so
-file path=usr/gnu/lib/$(MACH64)/gettext/user-email
-file path=usr/gnu/lib/$(MACH64)/gettext/project-id
-file path=usr/gnu/lib/$(MACH64)/gettext/urlget
-file path=usr/gnu/lib/$(MACH64)/gettext/hostname
-file path=usr/gnu/lib/$(MACH64)/libgettextsrc-0.18.1.so
-file path=usr/gnu/lib/$(MACH64)/libasprintf.a
+file path=usr/gnu/lib/$(mach64)/libgettextpo.a
+file path=usr/gnu/lib/$(mach64)/libgettextlib-0.18.1.so
+file path=usr/gnu/lib/$(mach64)/gettext/user-email
+file path=usr/gnu/lib/$(mach64)/gettext/project-id
+file path=usr/gnu/lib/$(mach64)/gettext/urlget
+file path=usr/gnu/lib/$(mach64)/gettext/hostname
+file path=usr/gnu/lib/$(mach64)/libgettextsrc-0.18.1.so
+file path=usr/gnu/lib/$(mach64)/libasprintf.a
 file path=usr/gnu/share/gettext/config.rpath
 file path=usr/gnu/share/gettext/styles/po-emacs-xterm16.css
 file path=usr/gnu/share/gettext/styles/po-emacs-xterm.css
@@ -242,9 +242,7 @@ file path=usr/include/gettext-po.h
 file path=usr/include/autosprintf.h
 file path=usr/share/info/gettext.info
 file path=usr/share/info/autosprintf.info
-link path=usr/gnu/lib/$(MACH64)/libgettextsrc.so target=libgettextsrc-0.18.1.so
-link path=usr/gnu/lib/$(MACH64)/libasprintf.so.0 target=libasprintf.so.0.0.0
-link path=usr/gnu/lib/$(MACH64)/libgettextlib.so target=libgettextlib-0.18.1.so
-link path=usr/gnu/lib/$(MACH64)/libgettextpo.so.0 target=libgettextpo.so.0.5.1
-link path=usr/gnu/lib/$(MACH64)/libasprintf.so target=libasprintf.so.0.0.0
-link path=usr/gnu/lib/$(MACH64)/libgettextpo.so target=libgettextpo.so.0.5.1
+link path=usr/gnu/lib/$(mach64)/libgettextsrc.so target=libgettextsrc-0.18.1.so
+link path=usr/gnu/lib/$(mach64)/libgettextlib.so target=libgettextlib-0.18.1.so
+link path=usr/gnu/lib/$(mach64)/libasprintf.so target=libasprintf.so.0
+link path=usr/gnu/lib/$(mach64)/libgettextpo.so target=libgettextpo.so.0

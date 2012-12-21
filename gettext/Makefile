@@ -10,10 +10,13 @@ license-file := COPYING
 build-depends += \
 	pkg:/library/libunistring \
 	pkg:/developer/versioning/git \
+	pkg:/library/libexpat \
 	pkg:/library/ncurses \
 	pkg:/library/libxml2
 
 prefix = /usr/gnu
+
+configure-options += --includedir=/usr/include
 
 name     := gettext
 home     := http://www.gnu.org/software/$(name)/
