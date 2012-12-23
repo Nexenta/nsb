@@ -40,8 +40,8 @@ configure-options += \
 	--with-ticlib=tic \
 	--with-termlib=tinfo
 
-configure-env.32 = \
-	PKG_CONFIG_LIBDIR="$(libdir.32)/pkgconfig"
+configure-env += \
+	PKG_CONFIG_LIBDIR="/usr/lib$(lib-suffix.$(bits))/pkgconfig"
 configure-options.32 = \
 	--without-manpages \
 	--without-progs
@@ -50,8 +50,6 @@ configure-options.32 = \
 build-32-stamp: target = libs
 install-32-stamp: target = install.libs
 
-configure-env.64 = \
-	PKG_CONFIG_LIBDIR="$(libdir.64)/pkgconfig"
 configure-options.64 = \
 	--with-progs
 
