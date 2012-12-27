@@ -15,7 +15,7 @@ dir  path=usr/lib/python$(pyver)
 dir  path=usr/lib/python$(pyver)/encodings
 dir  path=usr/lib/python$(pyver)/logging
 
-file path=usr/bin/python2.7
+file path=usr/bin/python$(pyver)
 file path=usr/share/man/man1/python$(pyver).1
 
 file path=usr/include/python$(pyver)/pyconfig.h
@@ -186,4 +186,32 @@ file path=usr/lib/python$(pyver)/weakref.py
 file sitecustomize.py path=etc/python$(pyver)/sitecustomize.py
 link target=etc/python$(pyver)/sitecustomize.py path=usr/lib/python$(pyver)/sitecustomize.py
 
+file path=usr/lib/python$(pyver)/lib-dynload/_bisect.so
+file path=usr/lib/python$(pyver)/lib-dynload/_collections.so
+file path=usr/lib/python$(pyver)/lib-dynload/_functools.so
+file path=usr/lib/python$(pyver)/lib-dynload/_hashlib.so
+file path=usr/lib/python$(pyver)/lib-dynload/_heapq.so
+file path=usr/lib/python$(pyver)/lib-dynload/_locale.so
+file path=usr/lib/python$(pyver)/lib-dynload/_random.so
+file path=usr/lib/python$(pyver)/lib-dynload/_socket.so
+file path=usr/lib/python$(pyver)/lib-dynload/_ssl.so
+file path=usr/lib/python$(pyver)/lib-dynload/_struct.so
+file path=usr/lib/python$(pyver)/lib-dynload/array.so
+file path=usr/lib/python$(pyver)/lib-dynload/binascii.so
+file path=usr/lib/python$(pyver)/lib-dynload/cPickle.so
+file path=usr/lib/python$(pyver)/lib-dynload/cStringIO.so
+file path=usr/lib/python$(pyver)/lib-dynload/cmath.so
+file path=usr/lib/python$(pyver)/lib-dynload/datetime.so
+file path=usr/lib/python$(pyver)/lib-dynload/fcntl.so
+file path=usr/lib/python$(pyver)/lib-dynload/grp.so
+file path=usr/lib/python$(pyver)/lib-dynload/itertools.so
+file path=usr/lib/python$(pyver)/lib-dynload/math.so
+file path=usr/lib/python$(pyver)/lib-dynload/operator.so
+file path=usr/lib/python$(pyver)/lib-dynload/select.so
+file path=usr/lib/python$(pyver)/lib-dynload/spwd.so
+file path=usr/lib/python$(pyver)/lib-dynload/strop.so
+file path=usr/lib/python$(pyver)/lib-dynload/syslog.so
+file path=usr/lib/python$(pyver)/lib-dynload/time.so
+file path=usr/lib/python$(pyver)/lib-dynload/unicodedata.so
+file path=usr/lib/python$(pyver)/lib-dynload/zlib.so
 

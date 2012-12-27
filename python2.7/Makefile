@@ -37,10 +37,12 @@ configure-options += \
 	--enable-shared \
 
 
-# Ensure Makefile goes into /usr/lib/pythonX.Y/config
-# (where runtime will look it for),
-# not into /usr/lib/amd64/pythonX.Y/config:
-install-%-stamp: make-vars += LIBPL=$(prefix)/lib/python$(pyver)/config
+# We install libpython.X.Y.so.* in usual place (libdir),
+# but runtime libraries go into the place where python
+# looks them for:
+install-%-stamp: make-vars += \
+	LIBPL=$(prefix)/lib/python$(pyver)/config \
+	DESTSHARED=$(prefix)/lib/python$(pyver)/lib-dynload
 
 checksum-Python-2.7.3.tar.bz2 := \
      md5:c57477edd6d18bd9eeca2f21add73919 \
