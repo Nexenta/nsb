@@ -16,6 +16,7 @@ dir  path=usr/lib/python$(pyver)/encodings
 dir  path=usr/lib/python$(pyver)/logging
 
 file path=usr/bin/python2.7
+file path=usr/share/man/man1/python$(pyver).1
 
 file path=usr/include/python$(pyver)/pyconfig.h
 file path=usr/lib/python$(pyver)/config/Makefile
@@ -181,7 +182,6 @@ file path=usr/lib/python$(pyver)/traceback.py
 file path=usr/lib/python$(pyver)/types.py
 file path=usr/lib/python$(pyver)/warnings.py
 file path=usr/lib/python$(pyver)/weakref.py
-file path=usr/share/man/man1/python$(pyver).1
 
 file sitecustomize.py path=etc/python$(pyver)/sitecustomize.py
 link target=etc/python$(pyver)/sitecustomize.py path=usr/lib/python$(pyver)/sitecustomize.py
