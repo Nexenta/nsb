@@ -34,8 +34,13 @@ configure-options += \
 	--with-dbmliborder=bdb:gdbm \
 	--with-system-expat \
 	--with-system-ffi \
-	--enable-static \
-	--libdir=/usr/lib
+	--enable-shared \
+
+
+# Ensure Makefile goes into /usr/lib/pythonX.Y/config
+# (where rumtime will look it for),
+# not into /usr/lib/amd64/pythonX.Y/config:
+install-%-stamp: make-vars += LIBPL=$(prefix)/lib/python$(pyver)/config
 
 checksum-Python-2.7.3.tar.bz2 := \
      md5:c57477edd6d18bd9eeca2f21add73919 \
