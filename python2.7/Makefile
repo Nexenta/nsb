@@ -38,7 +38,7 @@ configure-options += \
 
 
 # Ensure Makefile goes into /usr/lib/pythonX.Y/config
-# (where rumtime will look it for),
+# (where runtime will look it for),
 # not into /usr/lib/amd64/pythonX.Y/config:
 install-%-stamp: make-vars += LIBPL=$(prefix)/lib/python$(pyver)/config
 
