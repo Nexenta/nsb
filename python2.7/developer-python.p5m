@@ -1,0 +1,130 @@
+set name=pkg.fmri value=pkg:/developer/python$(pyver)@$(ips-version)
+set name=pkg.summary value="Header files and a static library for Python (version $(pyver))"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+depend fmri=pkg:/library/openssl type=require
+depend fmri=pkg:/library/libexpat type=require
+
+depend fmri=pkg:/library/libpython$(pyver)@$(ips-version) type=require
+depend fmri=pkg:/library/libpython$(pyver)@$(ips-version) type=incorporate
+
+depend fmri=pkg:/runtime/python$(pyver)@$(ips-version) type=require
+depend fmri=pkg:/runtime/python$(pyver)@$(ips-version) type=incorporate
+
+file path=usr/bin/python$(pyver)-config pkg.depend.bypass-generate=.*
+file python-config.1 path=usr/share/man/man1/python$(pyver)-config.1
+
+file path=usr/include/python$(pyver)/Python-ast.h
+file path=usr/include/python$(pyver)/Python.h
+file path=usr/include/python$(pyver)/abstract.h
+file path=usr/include/python$(pyver)/asdl.h
+file path=usr/include/python$(pyver)/ast.h
+file path=usr/include/python$(pyver)/bitset.h
+file path=usr/include/python$(pyver)/boolobject.h
+file path=usr/include/python$(pyver)/bufferobject.h
+file path=usr/include/python$(pyver)/bytearrayobject.h
+file path=usr/include/python$(pyver)/bytes_methods.h
+file path=usr/include/python$(pyver)/bytesobject.h
+file path=usr/include/python$(pyver)/cStringIO.h
+file path=usr/include/python$(pyver)/cellobject.h
+file path=usr/include/python$(pyver)/ceval.h
+file path=usr/include/python$(pyver)/classobject.h
+file path=usr/include/python$(pyver)/cobject.h
+file path=usr/include/python$(pyver)/code.h
+file path=usr/include/python$(pyver)/codecs.h
+file path=usr/include/python$(pyver)/compile.h
+file path=usr/include/python$(pyver)/complexobject.h
+file path=usr/include/python$(pyver)/datetime.h
+file path=usr/include/python$(pyver)/descrobject.h
+file path=usr/include/python$(pyver)/dictobject.h
+file path=usr/include/python$(pyver)/dtoa.h
+file path=usr/include/python$(pyver)/enumobject.h
+file path=usr/include/python$(pyver)/errcode.h
+file path=usr/include/python$(pyver)/eval.h
+file path=usr/include/python$(pyver)/fileobject.h
+file path=usr/include/python$(pyver)/floatobject.h
+file path=usr/include/python$(pyver)/frameobject.h
+file path=usr/include/python$(pyver)/funcobject.h
+file path=usr/include/python$(pyver)/genobject.h
+file path=usr/include/python$(pyver)/graminit.h
+file path=usr/include/python$(pyver)/grammar.h
+file path=usr/include/python$(pyver)/import.h
+file path=usr/include/python$(pyver)/intobject.h
+file path=usr/include/python$(pyver)/intrcheck.h
+file path=usr/include/python$(pyver)/iterobject.h
+file path=usr/include/python$(pyver)/listobject.h
+file path=usr/include/python$(pyver)/longintrepr.h
+file path=usr/include/python$(pyver)/longobject.h
+file path=usr/include/python$(pyver)/marshal.h
+file path=usr/include/python$(pyver)/memoryobject.h
+file path=usr/include/python$(pyver)/metagrammar.h
+file path=usr/include/python$(pyver)/methodobject.h
+file path=usr/include/python$(pyver)/modsupport.h
+file path=usr/include/python$(pyver)/moduleobject.h
+file path=usr/include/python$(pyver)/node.h
+file path=usr/include/python$(pyver)/object.h
+file path=usr/include/python$(pyver)/objimpl.h
+file path=usr/include/python$(pyver)/opcode.h
+file path=usr/include/python$(pyver)/osdefs.h
+file path=usr/include/python$(pyver)/parsetok.h
+file path=usr/include/python$(pyver)/patchlevel.h
+file path=usr/include/python$(pyver)/pgen.h
+file path=usr/include/python$(pyver)/pgenheaders.h
+file path=usr/include/python$(pyver)/py_curses.h
+file path=usr/include/python$(pyver)/pyarena.h
+file path=usr/include/python$(pyver)/pycapsule.h
+file path=usr/include/python$(pyver)/pyconfig.h
+file path=usr/include/python$(pyver)/pyctype.h
+file path=usr/include/python$(pyver)/pydebug.h
+file path=usr/include/python$(pyver)/pyerrors.h
+file path=usr/include/python$(pyver)/pyexpat.h
+file path=usr/include/python$(pyver)/pyfpe.h
+file path=usr/include/python$(pyver)/pygetopt.h
+file path=usr/include/python$(pyver)/pymacconfig.h
+file path=usr/include/python$(pyver)/pymactoolbox.h
+file path=usr/include/python$(pyver)/pymath.h
+file path=usr/include/python$(pyver)/pymem.h
+file path=usr/include/python$(pyver)/pyport.h
+file path=usr/include/python$(pyver)/pystate.h
+file path=usr/include/python$(pyver)/pystrcmp.h
+file path=usr/include/python$(pyver)/pystrtod.h
+file path=usr/include/python$(pyver)/pythonrun.h
+file path=usr/include/python$(pyver)/pythread.h
+file path=usr/include/python$(pyver)/rangeobject.h
+file path=usr/include/python$(pyver)/setobject.h
+file path=usr/include/python$(pyver)/sliceobject.h
+file path=usr/include/python$(pyver)/stringobject.h
+file path=usr/include/python$(pyver)/structmember.h
+file path=usr/include/python$(pyver)/structseq.h
+file path=usr/include/python$(pyver)/symtable.h
+file path=usr/include/python$(pyver)/sysmodule.h
+file path=usr/include/python$(pyver)/timefuncs.h
+file path=usr/include/python$(pyver)/token.h
+file path=usr/include/python$(pyver)/traceback.h
+file path=usr/include/python$(pyver)/tupleobject.h
+file path=usr/include/python$(pyver)/ucnhash.h
+file path=usr/include/python$(pyver)/unicodeobject.h
+file path=usr/include/python$(pyver)/warnings.h
+file path=usr/include/python$(pyver)/weakrefobject.h
+file path=usr/lib/$(mach64)/pkgconfig/python-$(pyver).pc
+file path=usr/lib/python$(pyver)/config/Setup
+file path=usr/lib/python$(pyver)/config/Setup.config
+file path=usr/lib/python$(pyver)/config/Setup.local
+file path=usr/lib/python$(pyver)/config/config.c
+file path=usr/lib/python$(pyver)/config/config.c.in
+file path=usr/lib/python$(pyver)/config/install-sh
+file path=usr/lib/python$(pyver)/config/libpython$(pyver).a
+file path=usr/lib/python$(pyver)/config/makesetup
+file path=usr/lib/python$(pyver)/config/python.o
+file path=usr/lib/python$(pyver)/distutils/command/wininst-6.0.exe
+file path=usr/lib/python$(pyver)/distutils/command/wininst-7.1.exe
+file path=usr/lib/python$(pyver)/distutils/command/wininst-8.0.exe
+file path=usr/lib/python$(pyver)/distutils/command/wininst-9.0-amd64.exe
+file path=usr/lib/python$(pyver)/distutils/command/wininst-9.0.exe
+
+link path=usr/lib/$(mach64)/libpython$(pyver).so target=libpython$(pyver).so.1
+link path=usr/lib/$(mach64)/libpython$(pyver).a \
+    target=../python$(pyver)/config/libpython$(pyver).a
