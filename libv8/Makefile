@@ -1,4 +1,6 @@
-include /usr/share/cibs/rules/ips.mk
+package ?= ips
+
+include /usr/share/cibs/rules/$(package).mk
 include /usr/share/cibs/rules/copy.mk
 include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/64.mk
@@ -8,7 +10,7 @@ summary      := v8 JavaScript engine
 home         := http://code.google.com/p/v8/
 license      := BSD
 license-file := LICENSE.v8
-version      := 3.14.5
+version      := 3.14.5.3
 name         := libv8
 libSoname    := libv8.so.$(version)
 so-version   := $(version)
@@ -18,11 +20,6 @@ build-depends += \
 
 archive := v8-$(version).tar.bz2
 download := http://mirror.yandex.ru/gentoo-distfiles/distfiles/$(archive)
-checksum := \
-     md5:be8f17f7cfc2885ecc67ef6b367f2c0d \
-    sha1:92ca5dd0872fcf06273a8994375ec1f4d5310879 \
-  sha256:361ad3b63dc7c9d0943b72b1be592a8135e4ddb0e416b9bcf02b4d2df514fca7 \
-    size:10351058
 
 
 v8arch.32 := ia32
@@ -63,4 +60,10 @@ install-%-stamp: build-%-stamp
 	mkdir -p $(protodir)/usr/include
 	cp $(v8out) $(protodir)/$(libdir)/
 	touch $@
+
+checksum-v8-3.14.5.3.tar.bz2 := \
+     md5:b09a0b6038e46039647da0163a6337de \
+    sha1:9b10a66b01e08ca6037c339bafe71a4d68474d26 \
+  sha256:f91d851abd284589272f2b338c74e10f07ce667736e8e73cbd301172cb7f75a1 \
+    size:10352249
 
