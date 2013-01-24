@@ -1,0 +1,49 @@
+set name=pkg.fmri value=pkg:/library/libczmq@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file)  license="$(license)"
+
+depend fmri=pkg:/library/libczmq1@$(ips-version) type=require
+depend fmri=pkg:/library/libczmq1@$(ips-version) type=incorporate
+
+file path=usr/bin/czmq_selftest
+file path=usr/share/man/man7/czmq.7
+file path=usr/share/man/man7/zmsg.7
+file path=usr/share/man/man7/zctx.7
+file path=usr/share/man/man7/zmutex.7
+file path=usr/share/man/man7/zsocket.7
+file path=usr/share/man/man7/zfile.7
+file path=usr/share/man/man7/zlist.7
+file path=usr/share/man/man7/zhash.7
+file path=usr/share/man/man7/zthread.7
+file path=usr/share/man/man7/zframe.7
+file path=usr/share/man/man7/zsockopt.7
+file path=usr/share/man/man7/zstr.7
+file path=usr/share/man/man7/zloop.7
+file path=usr/share/man/man7/zclock.7
+
+$(build64)file path=usr/lib/$(mach64)/pkgconfig/libczmq.pc
+$(build64)file path=usr/lib/$(mach64)/libczmq.a
+$(build64)link path=usr/lib/$(mach64)/libczmq.so target=libczmq.so.1
+
+$(build32)file path=usr/lib/pkgconfig/libczmq.pc
+$(build32)file path=usr/lib/libczmq.a
+$(build32)link path=usr/lib/libczmq.so target=libczmq.so.1
+
+file path=usr/include/zloop.h
+file path=usr/include/zctx.h
+file path=usr/include/zclock.h
+file path=usr/include/zmsg.h
+file path=usr/include/czmq.h
+file path=usr/include/czmq_prelude.h
+file path=usr/include/zframe.h
+file path=usr/include/zhash.h
+file path=usr/include/zlist.h
+file path=usr/include/zthread.h
+file path=usr/include/zfile.h
+file path=usr/include/zstr.h
+file path=usr/include/zmutex.h
+file path=usr/include/zsocket.h
+file path=usr/include/zsockopt.h
