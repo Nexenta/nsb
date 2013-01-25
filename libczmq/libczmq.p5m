@@ -8,7 +8,6 @@ license $(license-file)  license="$(license)"
 depend fmri=pkg:/library/libczmq1@$(ips-version) type=require
 depend fmri=pkg:/library/libczmq1@$(ips-version) type=incorporate
 
-file path=usr/bin/czmq_selftest
 file path=usr/share/man/man7/czmq.7
 file path=usr/share/man/man7/zmsg.7
 file path=usr/share/man/man7/zctx.7
