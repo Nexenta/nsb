@@ -34,6 +34,8 @@ build-depends += \
 	library/readline \
 	library/tinfo \
 	library/zlib \
+	text/help2man \
+
 
 configure-options += \
 	--without-gcc \
@@ -71,12 +73,18 @@ postinst-stamp: install-default-stamp
 	ln -sf ../lib/python$(VER)/pdb.py $(d)/usr/bin/pdb$(VER)
 	: # versioned install only
 	rm -f $(d)/usr/bin/python-config
-	mv $(d)/usr/bin/2to3 $(d)/usr/bin/2to3-$(VER)
 	mv $(d)/usr/bin/pydoc $(d)/usr/bin/pydoc$(VER)
 	: # Remove version information from the egg-info file
 	mv $(d)/$(scriptdir)/lib-dynload/Python-$(VER)*.egg-info \
 		$(d)/$(scriptdir)/lib-dynload/Python-$(VER).egg-info
 	cp -p $(sourcedir)/Tools/i18n/pygettext.py $(d)/usr/bin/pygettext$(VER)
+
+	mv $(d)/usr/bin/2to3 $(d)/usr/bin/2to3-$(VER)
+	PYTHONPATH=$(d)/$(scriptdir) \
+	help2man --no-info --version-string=$(VER) --no-discard-stderr \
+	  --name 'Python2 to Python3 converter' \
+	$(d)/usr/bin/2to3-$(VER) \
+	> $(d)/usr/share/man/man1/2to3-$(VER).1
 
 	touch $@
 
