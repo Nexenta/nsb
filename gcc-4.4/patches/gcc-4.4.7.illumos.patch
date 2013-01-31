@@ -1,6 +1,6 @@
-diff -dubr gcc-4.4.7/fixincludes/fixincl.x gcc-4.4.7.illumos/fixincludes/fixincl.x
---- gcc-4.4.7/fixincludes/fixincl.x	2010-12-13 21:22:09.000000000 +0300
-+++ gcc-4.4.7.illumos/fixincludes/fixincl.x	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/fixincludes/fixincl.x source/fixincludes/fixincl.x
+--- orig/fixincludes/fixincl.x	2010-12-13 21:22:09.000000000 +0300
++++ source/fixincludes/fixincl.x	2013-01-30 19:23:07.367774204 +0400
 @@ -6420,10 +6420,22 @@
   */
  tSCC zSun_Auth_ProtoBypass0[] =
@@ -25,10 +25,9 @@ diff -dubr gcc-4.4.7/fixincludes/fixincl.x gcc-4.4.7.illumos/fixincludes/fixincl
    { TT_EGREP,    zSun_Auth_ProtoSelect0, (regex_t*)NULL }, };
  
  /*
-Только в gcc-4.4.7.illumos/fixincludes: fixincl.x.orig
-diff -dubr gcc-4.4.7/fixincludes/inclhack.def gcc-4.4.7.illumos/fixincludes/inclhack.def
---- gcc-4.4.7/fixincludes/inclhack.def	2010-12-13 21:22:09.000000000 +0300
-+++ gcc-4.4.7.illumos/fixincludes/inclhack.def	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/fixincludes/inclhack.def source/fixincludes/inclhack.def
+--- orig/fixincludes/inclhack.def	2010-12-13 21:22:09.000000000 +0300
++++ source/fixincludes/inclhack.def	2013-01-30 19:23:07.374086042 +0400
 @@ -3459,6 +3459,21 @@
       */
      select    = '\(\*[a-z][a-z_]*\)\(\)';
@@ -51,11 +50,23 @@ diff -dubr gcc-4.4.7/fixincludes/inclhack.def gcc-4.4.7.illumos/fixincludes/incl
      c_fix     = format;
      c_fix_arg = "#ifdef __cplusplus\n%1(...);%2\n"
                  "#else\n%1();%2\n#endif";
-Только в gcc-4.4.7.illumos/fixincludes: inclhack.def.orig
-Только в gcc-4.4.7.illumos/gcc: ChangeLog.orig
-diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i386.c
---- gcc-4.4.7/gcc/config/i386/i386.c	2012-02-22 23:47:42.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/i386/i386.c	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/common.opt source/gcc/common.opt
+--- orig/gcc/common.opt	2009-03-28 20:28:45.000000000 +0300
++++ source/gcc/common.opt	2013-01-30 19:23:38.478448259 +0400
+@@ -1108,6 +1108,10 @@
+ Common Report Var(flag_strict_aliasing) Optimization
+ Assume strict aliasing rules apply
+ 
++fstrict-calling-conventions
++Common Report Var(flag_strict_calling_conventions) Init(1)
++Use strict ABI calling conventions even for static functions
++
+ fstrict-overflow
+ Common Report Var(flag_strict_overflow)
+ Treat signed overflow as undefined
+diff -dubrN orig/gcc/config/i386/i386.c source/gcc/config/i386/i386.c
+--- orig/gcc/config/i386/i386.c	2012-02-22 23:47:42.000000000 +0400
++++ source/gcc/config/i386/i386.c	2013-01-30 19:23:38.505666277 +0400
 @@ -1654,10 +1654,14 @@
  
     saved frame pointer if frame_pointer_needed
@@ -119,7 +130,25 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
    /* Validate -mpreferred-stack-boundary= value or default it to
       PREFERRED_STACK_BOUNDARY_DEFAULT.  */
    ix86_preferred_stack_boundary = PREFERRED_STACK_BOUNDARY_DEFAULT;
-@@ -7375,8 +7389,8 @@
+@@ -4387,6 +4401,7 @@
+   if (decl
+       && TREE_CODE (decl) == FUNCTION_DECL
+       && optimize
++      && (TARGET_64BIT || !flag_strict_calling_conventions)
+       && !profile_flag)
+     {
+       /* FIXME: remove this CONST_CAST when cgraph.[ch] is constified.  */
+@@ -4471,7 +4486,8 @@
+ 
+   /* For local functions, pass up to SSE_REGPARM_MAX SFmode
+      (and DFmode for SSE2) arguments in SSE registers.  */
+-  if (decl && TARGET_SSE_MATH && optimize && !profile_flag)
++  if (decl && TARGET_SSE_MATH && optimize && !profile_flag &&
++    (TARGET_64BIT || !flag_strict_calling_conventions))
+     {
+       /* FIXME: remove this CONST_CAST when cgraph.[ch] is constified.  */
+       struct cgraph_local_info *i = cgraph_local_info (CONST_CAST_TREE(decl));
+@@ -7375,8 +7391,8 @@
      return 0;
  
    ix86_compute_frame_layout (&frame);
@@ -130,7 +159,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  }
  
  /* Value should be nonzero if functions must have frame pointers.
-@@ -7396,6 +7410,9 @@
+@@ -7396,6 +7412,9 @@
    if (SUBTARGET_FRAME_POINTER_REQUIRED)
      return 1;
  
@@ -140,7 +169,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
    /* In override_options, TARGET_OMIT_LEAF_FRAME_POINTER turns off
       the frame pointer by default.  Turn it back on now if we've not
       got a leaf function.  */
-@@ -7761,6 +7778,7 @@
+@@ -7761,6 +7780,7 @@
  
    frame->nregs = ix86_nsaved_regs ();
    frame->nsseregs = ix86_nsaved_sseregs ();
@@ -148,7 +177,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
    total_size = size;
  
    stack_alignment_needed = crtl->stack_alignment_needed / BITS_PER_UNIT;
-@@ -7816,6 +7834,11 @@
+@@ -7816,6 +7836,11 @@
    else
      frame->save_regs_using_mov = false;
  
@@ -160,7 +189,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  
    /* Skip return address and saved base pointer.  */
    offset = frame_pointer_needed ? UNITS_PER_WORD * 2 : UNITS_PER_WORD;
-@@ -7827,17 +7850,27 @@
+@@ -7827,17 +7852,27 @@
    if (stack_realign_fp)
      offset = (offset + stack_alignment_needed -1) & -stack_alignment_needed;
  
@@ -191,7 +220,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  
    /* Va-arg area */
    frame->va_arg_size = ix86_varargs_gpr_size + ix86_varargs_fpr_size;
-@@ -7888,8 +7921,10 @@
+@@ -7888,8 +7923,10 @@
      (size + frame->padding1 + frame->padding2
       + frame->outgoing_arguments_size + frame->va_arg_size);
  
@@ -204,7 +233,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
      frame->save_regs_using_mov = false;
  
    if (!TARGET_64BIT_MS_ABI && TARGET_RED_ZONE
-@@ -7899,7 +7934,11 @@
+@@ -7899,7 +7936,11 @@
      {
        frame->red_zone_size = frame->to_allocate;
        if (frame->save_regs_using_mov)
@@ -217,7 +246,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
        if (frame->red_zone_size > RED_ZONE_SIZE - RED_ZONE_RESERVE)
  	frame->red_zone_size = RED_ZONE_SIZE - RED_ZONE_RESERVE;
      }
-@@ -7912,7 +7951,9 @@
+@@ -7912,7 +7953,9 @@
    fprintf (stderr, "size: %ld\n", (long)size);
    fprintf (stderr, "nregs: %ld\n", (long)frame->nregs);
    fprintf (stderr, "nsseregs: %ld\n", (long)frame->nsseregs);
@@ -227,7 +256,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
    fprintf (stderr, "alignment1: %ld\n", (long)stack_alignment_needed);
    fprintf (stderr, "padding1: %ld\n", (long)frame->padding1);
    fprintf (stderr, "va_arg: %ld\n", (long)frame->va_arg_size);
-@@ -7929,6 +7970,7 @@
+@@ -7929,6 +7972,7 @@
  #endif
  }
  
@@ -235,7 +264,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  /* Emit code to save registers in the prologue.  */
  
  static void
-@@ -7937,6 +7979,22 @@
+@@ -7937,6 +7981,22 @@
    unsigned int regno;
    rtx insn;
  
@@ -258,7 +287,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
    for (regno = FIRST_PSEUDO_REGISTER - 1; regno-- > 0; )
      if (!SSE_REGNO_P (regno) && ix86_save_reg (regno, true))
        {
-@@ -7962,6 +8020,24 @@
+@@ -7962,6 +8022,24 @@
  	RTX_FRAME_RELATED_P (insn) = 1;
  	offset += UNITS_PER_WORD;
        }
@@ -283,7 +312,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  }
  
  /* Emit code to save registers using MOV insns.  First register
-@@ -8288,12 +8364,13 @@
+@@ -8288,12 +8366,13 @@
        RTX_FRAME_RELATED_P (insn) = 1;
      }
  
@@ -299,7 +328,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  
    /* When using red zone we may start register saving before allocating
       the stack frame saving one cycle of the prologue. However I will
-@@ -8306,7 +8383,8 @@
+@@ -8306,7 +8385,8 @@
  				     && !crtl->stack_realign_needed) 
                                     ? hard_frame_pointer_rtx
  				   : stack_pointer_rtx,
@@ -309,7 +338,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  
    if (allocate == 0)
      ;
-@@ -8360,16 +8438,20 @@
+@@ -8360,16 +8440,20 @@
        && !(!TARGET_64BIT_MS_ABI && TARGET_RED_ZONE
           && (! TARGET_STACK_PROBE || allocate < CHECK_STACK_LIMIT)))
      {
@@ -335,7 +364,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
    if (!frame_pointer_needed
        || !(frame.to_allocate + frame.padding0)
        || crtl->stack_realign_needed)
-@@ -8379,7 +8461,7 @@
+@@ -8379,7 +8463,7 @@
      ix86_emit_save_sse_regs_using_mov (hard_frame_pointer_rtx,
  				       - frame.nregs * UNITS_PER_WORD
  				       - frame.nsseregs * 16
@@ -344,7 +373,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  
    pic_reg_used = false;
    if (pic_offset_table_rtx
-@@ -8538,11 +8620,11 @@
+@@ -8538,11 +8622,11 @@
       must be taken for the normal return case of a function using
       eh_return: the eax and edx registers are marked as saved, but not
       restored along this path.  */
@@ -358,7 +387,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  
    /* If we're only restoring one register and sp is not valid then
       using a move instruction to restore the register since it's
-@@ -8584,7 +8666,7 @@
+@@ -8584,7 +8668,7 @@
  	  ix86_emit_restore_regs_using_mov (stack_pointer_rtx,
  					    frame.to_allocate
  					    + frame.nsseregs * 16
@@ -367,7 +396,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  	}
        else
          {
-@@ -8593,7 +8675,7 @@
+@@ -8593,7 +8677,7 @@
  	  ix86_emit_restore_regs_using_mov (hard_frame_pointer_rtx,
  					    offset
  					    + frame.nsseregs * 16
@@ -376,7 +405,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
          }
  
        /* eh_return epilogues need %ecx added to the stack pointer.  */
-@@ -8620,18 +8702,20 @@
+@@ -8620,18 +8704,20 @@
  	    {
  	      tmp = gen_rtx_PLUS (Pmode, stack_pointer_rtx, sa);
  	      tmp = plus_constant (tmp, (frame.to_allocate
@@ -401,7 +430,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  				   style);
        /* If not an i386, mov & pop is faster than "leave".  */
        else if (TARGET_USE_LEAVE || optimize_function_for_size_p (cfun)
-@@ -8676,12 +8760,17 @@
+@@ -8676,12 +8762,17 @@
  	  pro_epilogue_adjust_stack (stack_pointer_rtx, stack_pointer_rtx,
  				     GEN_INT (frame.to_allocate
  				     	      + frame.nsseregs * 16
@@ -420,7 +449,7 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
        if (frame_pointer_needed)
  	{
  	  /* Leave results in shorter dependency chains on CPUs that are
-@@ -9110,10 +9199,21 @@
+@@ -9110,10 +9201,21 @@
    return CONSTANT_P (x) && legitimate_address_p (Pmode, x, 1);
  }
  
@@ -443,10 +472,9 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.c gcc-4.4.7.illumos/gcc/config/i386/i3
  bool
  legitimate_pic_operand_p (rtx x)
  {
-Только в gcc-4.4.7.illumos/gcc/config/i386: i386.c.orig
-diff -dubr gcc-4.4.7/gcc/config/i386/i386.opt gcc-4.4.7.illumos/gcc/config/i386/i386.opt
---- gcc-4.4.7/gcc/config/i386/i386.opt	2009-02-20 18:20:38.000000000 +0300
-+++ gcc-4.4.7.illumos/gcc/config/i386/i386.opt	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/i386/i386.opt source/gcc/config/i386/i386.opt
+--- orig/gcc/config/i386/i386.opt	2009-02-20 18:20:38.000000000 +0300
++++ source/gcc/config/i386/i386.opt	2013-01-30 19:23:07.525310281 +0400
 @@ -224,6 +224,10 @@
  Target Report Mask(TLS_DIRECT_SEG_REFS)
  Use direct references against %gs when accessing tls data
@@ -458,9 +486,9 @@ diff -dubr gcc-4.4.7/gcc/config/i386/i386.opt gcc-4.4.7.illumos/gcc/config/i386/
  mtune=
  Target RejectNegative Joined Var(ix86_tune_string)
  Schedule code for given CPU
-diff -dubr gcc-4.4.7/gcc/config/i386/sol2-10.h gcc-4.4.7.illumos/gcc/config/i386/sol2-10.h
---- gcc-4.4.7/gcc/config/i386/sol2-10.h	2010-07-15 14:08:56.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/i386/sol2-10.h	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/i386/sol2-10.h source/gcc/config/i386/sol2-10.h
+--- orig/gcc/config/i386/sol2-10.h	2010-07-15 14:08:56.000000000 +0400
++++ source/gcc/config/i386/sol2-10.h	2013-01-30 19:23:07.527679958 +0400
 @@ -94,7 +94,7 @@
     %{R*} \
     %{compat-bsd: \
@@ -470,9 +498,9 @@ diff -dubr gcc-4.4.7/gcc/config/i386/sol2-10.h gcc-4.4.7.illumos/gcc/config/i386
               -R /usr/ucblib/64} \
     %{!compat-bsd: \
       %{!YP,*:%{p|pg:-Y P,/usr/lib/libp/64:/lib/64:/usr/lib/64} \
-diff -dubr gcc-4.4.7/gcc/config/sol2-c.c gcc-4.4.7.illumos/gcc/config/sol2-c.c
---- gcc-4.4.7/gcc/config/sol2-c.c	2007-09-18 02:07:46.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sol2-c.c	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sol2-c.c source/gcc/config/sol2-c.c
+--- orig/gcc/config/sol2-c.c	2007-09-18 02:07:46.000000000 +0400
++++ source/gcc/config/sol2-c.c	2013-01-30 19:23:07.578274737 +0400
 @@ -114,8 +114,9 @@
      {
        tree decl = identifier_global_value (t);
@@ -485,9 +513,9 @@ diff -dubr gcc-4.4.7/gcc/config/sol2-c.c gcc-4.4.7.illumos/gcc/config/sol2-c.c
        else
  	solaris_pending_aligns = tree_cons (t, build_tree_list (NULL, x),
  					    solaris_pending_aligns);
-diff -dubr gcc-4.4.7/gcc/config/sol2.h gcc-4.4.7.illumos/gcc/config/sol2.h
---- gcc-4.4.7/gcc/config/sol2.h	2010-06-02 21:51:29.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sol2.h	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sol2.h source/gcc/config/sol2.h
+--- orig/gcc/config/sol2.h	2010-06-02 21:51:29.000000000 +0400
++++ source/gcc/config/sol2.h	2013-01-30 19:23:07.580536112 +0400
 @@ -123,12 +123,12 @@
     %{YP,*} \
     %{R*} \
@@ -505,9 +533,9 @@ diff -dubr gcc-4.4.7/gcc/config/sol2.h gcc-4.4.7.illumos/gcc/config/sol2.h
  
  #undef LINK_ARCH32_SPEC
  #define LINK_ARCH32_SPEC LINK_ARCH32_SPEC_BASE
-diff -dubr gcc-4.4.7/gcc/config/sparc/sol2-bi.h gcc-4.4.7.illumos/gcc/config/sparc/sol2-bi.h
---- gcc-4.4.7/gcc/config/sparc/sol2-bi.h	2007-10-19 08:29:38.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sparc/sol2-bi.h	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sparc/sol2-bi.h source/gcc/config/sparc/sol2-bi.h
+--- orig/gcc/config/sparc/sol2-bi.h	2007-10-19 08:29:38.000000000 +0400
++++ source/gcc/config/sparc/sol2-bi.h	2013-01-30 19:23:07.590292675 +0400
 @@ -172,12 +172,12 @@
     %{YP,*} \
     %{R*} \
@@ -525,9 +553,9 @@ diff -dubr gcc-4.4.7/gcc/config/sparc/sol2-bi.h gcc-4.4.7.illumos/gcc/config/spa
  
  #define LINK_ARCH64_SPEC LINK_ARCH64_SPEC_BASE
  
-diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.c gcc-4.4.7.illumos/gcc/config/sparc/sparc.c
---- gcc-4.4.7/gcc/config/sparc/sparc.c	2011-06-06 03:20:56.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sparc/sparc.c	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sparc/sparc.c source/gcc/config/sparc/sparc.c
+--- orig/gcc/config/sparc/sparc.c	2011-06-06 03:20:56.000000000 +0400
++++ source/gcc/config/sparc/sparc.c	2013-01-30 19:23:07.603449996 +0400
 @@ -2984,6 +2984,9 @@
  	  if (TARGET_ARCH32 && !optimize
  	      && (mode == DFmode || mode == DImode))
@@ -548,19 +576,18 @@ diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.c gcc-4.4.7.illumos/gcc/config/sparc
        && mem_min_alignment (mem, 8))
      return 0;
  
-Только в gcc-4.4.7.illumos/gcc/config/sparc: sparc.c.orig
-diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.h gcc-4.4.7.illumos/gcc/config/sparc/sparc.h
---- gcc-4.4.7/gcc/config/sparc/sparc.h	2011-05-22 02:05:52.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sparc/sparc.h	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sparc/sparc.h source/gcc/config/sparc/sparc.h
+--- orig/gcc/config/sparc/sparc.h	2011-05-22 02:05:52.000000000 +0400
++++ source/gcc/config/sparc/sparc.h	2013-01-30 19:23:07.608786324 +0400
 @@ -2402,3 +2402,5 @@
  
  /* We use gcc _mcount for profiling.  */
  #define NO_PROFILE_COUNTERS 0
 +
 +#define ASSUME_32BIT_CALLERS sparc_assume_32bit_callers
-diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.md gcc-4.4.7.illumos/gcc/config/sparc/sparc.md
---- gcc-4.4.7/gcc/config/sparc/sparc.md	2011-06-09 23:51:17.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sparc/sparc.md	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sparc/sparc.md source/gcc/config/sparc/sparc.md
+--- orig/gcc/config/sparc/sparc.md	2011-06-09 23:51:17.000000000 +0400
++++ source/gcc/config/sparc/sparc.md	2013-01-30 19:23:07.620621869 +0400
 @@ -1959,7 +1959,7 @@
  				"=o,T,U,o,r,r,r,?T,?f,?f,?o,?f")
          (match_operand:DI 1 "input_operand"
@@ -742,10 +769,9 @@ diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.md gcc-4.4.7.illumos/gcc/config/spar
    && mems_ok_for_ldd_peep (operands[2], operands[0], NULL_RTX)"
    [(set (match_dup 2)
  	(match_dup 3))]
-Только в gcc-4.4.7.illumos/gcc/config/sparc: sparc.md.orig
-diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.opt gcc-4.4.7.illumos/gcc/config/sparc/sparc.opt
---- gcc-4.4.7/gcc/config/sparc/sparc.opt	2007-08-02 14:49:31.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/config/sparc/sparc.opt	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config/sparc/sparc.opt source/gcc/config/sparc/sparc.opt
+--- orig/gcc/config/sparc/sparc.opt	2007-08-02 14:49:31.000000000 +0400
++++ source/gcc/config/sparc/sparc.opt	2013-01-30 19:23:07.629377138 +0400
 @@ -38,6 +38,10 @@
  Target Report
  Pass -assert pure-text to linker
@@ -768,9 +794,9 @@ diff -dubr gcc-4.4.7/gcc/config/sparc/sparc.opt gcc-4.4.7.illumos/gcc/config/spa
  Mask(LITTLE_ENDIAN)
  ;; Generate code for little-endian
  
-diff -dubr gcc-4.4.7/gcc/config.gcc gcc-4.4.7.illumos/gcc/config.gcc
---- gcc-4.4.7/gcc/config.gcc	2011-02-19 00:39:51.000000000 +0300
-+++ gcc-4.4.7.illumos/gcc/config.gcc	2012-09-27 21:10:47.000000000 +0400
+diff -dubrN orig/gcc/config.gcc source/gcc/config.gcc
+--- orig/gcc/config.gcc	2011-02-19 00:39:51.000000000 +0300
++++ source/gcc/config.gcc	2013-01-30 19:23:07.656053218 +0400
 @@ -1237,6 +1237,8 @@
  	  "":*:yes | yes:*:yes )
  		thread_file=solaris
@@ -780,10 +806,9 @@ diff -dubr gcc-4.4.7/gcc/config.gcc gcc-4.4.7.illumos/gcc/config.gcc
  	esac
  	;;
  i[4567]86-wrs-vxworks|i[4567]86-wrs-vxworksae)
-Только в gcc-4.4.7.illumos/gcc: config.gcc.orig
-diff -dubr gcc-4.4.7/gcc/cp/g++spec.c gcc-4.4.7.illumos/gcc/cp/g++spec.c
---- gcc-4.4.7/gcc/cp/g++spec.c	2009-02-20 18:20:38.000000000 +0300
-+++ gcc-4.4.7.illumos/gcc/cp/g++spec.c	2012-09-27 21:10:52.000000000 +0400
+diff -dubrN orig/gcc/cp/g++spec.c source/gcc/cp/g++spec.c
+--- orig/gcc/cp/g++spec.c	2009-02-20 18:20:38.000000000 +0300
++++ source/gcc/cp/g++spec.c	2013-01-30 19:23:07.669426005 +0400
 @@ -260,7 +260,7 @@
  #endif
  
@@ -793,9 +818,9 @@ diff -dubr gcc-4.4.7/gcc/cp/g++spec.c gcc-4.4.7.illumos/gcc/cp/g++spec.c
    arglist = XNEWVEC (const char *, num_args);
  
    i = 0;
-diff -dubr gcc-4.4.7/gcc/cp/Make-lang.in gcc-4.4.7.illumos/gcc/cp/Make-lang.in
---- gcc-4.4.7/gcc/cp/Make-lang.in	2009-09-09 12:46:32.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/cp/Make-lang.in	2012-09-27 21:10:52.000000000 +0400
+diff -dubrN orig/gcc/cp/Make-lang.in source/gcc/cp/Make-lang.in
+--- orig/gcc/cp/Make-lang.in	2009-09-09 12:46:32.000000000 +0400
++++ source/gcc/cp/Make-lang.in	2013-01-30 19:23:07.691980362 +0400
 @@ -55,7 +55,7 @@
  g++spec.o: $(srcdir)/cp/g++spec.c $(SYSTEM_H) coretypes.h $(TM_H) $(GCC_H) $(CONFIG_H)
  	(SHLIB_LINK='$(SHLIB_LINK)'; \
@@ -805,9 +830,9 @@ diff -dubr gcc-4.4.7/gcc/cp/Make-lang.in gcc-4.4.7.illumos/gcc/cp/Make-lang.in
  
  # Create the compiler driver for g++.
  GXX_OBJS = $(GCC_OBJS) g++spec.o intl.o prefix.o version.o
-diff -dubr gcc-4.4.7/gcc/doc/cpp.texi gcc-4.4.7.illumos/gcc/doc/cpp.texi
---- gcc-4.4.7/gcc/doc/cpp.texi	2008-08-05 21:24:37.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/doc/cpp.texi	2012-09-27 21:10:52.000000000 +0400
+diff -dubrN orig/gcc/doc/cpp.texi source/gcc/doc/cpp.texi
+--- orig/gcc/doc/cpp.texi	2008-08-05 21:24:37.000000000 +0400
++++ source/gcc/doc/cpp.texi	2013-01-30 19:23:07.742939690 +0400
 @@ -3508,8 +3508,6 @@
  official GNU extensions either.  What historical information we have
  been able to find, suggests they originated with System V@.
@@ -817,9 +842,9 @@ diff -dubr gcc-4.4.7/gcc/doc/cpp.texi gcc-4.4.7.illumos/gcc/doc/cpp.texi
  @cindex null directive
  The @dfn{null directive} consists of a @samp{#} followed by a newline,
  with only whitespace (including comments) in between.  A null directive
-diff -dubr gcc-4.4.7/gcc/doc/invoke.texi gcc-4.4.7.illumos/gcc/doc/invoke.texi
---- gcc-4.4.7/gcc/doc/invoke.texi	2011-03-24 01:02:12.000000000 +0300
-+++ gcc-4.4.7.illumos/gcc/doc/invoke.texi	2012-09-27 21:10:52.000000000 +0400
+diff -dubrN orig/gcc/doc/invoke.texi source/gcc/doc/invoke.texi
+--- orig/gcc/doc/invoke.texi	2011-03-24 01:02:12.000000000 +0300
++++ source/gcc/doc/invoke.texi	2013-01-30 19:23:38.521595995 +0400
 @@ -793,7 +793,8 @@
  -mfaster-structs  -mno-faster-structs @gol
  -mfpu  -mno-fpu  -mhard-float  -msoft-float @gol
@@ -830,7 +855,20 @@ diff -dubr gcc-4.4.7/gcc/doc/invoke.texi gcc-4.4.7.illumos/gcc/doc/invoke.texi
  -mstack-bias  -mno-stack-bias @gol
  -munaligned-doubles  -mno-unaligned-doubles @gol
  -mv8plus  -mno-v8plus  -mvis  -mno-vis
-@@ -11549,6 +11550,10 @@
+@@ -6586,6 +6587,12 @@
+ The @option{-fstrict-aliasing} option is enabled at levels
+ @option{-O2}, @option{-O3}, @option{-Os}.
+ 
++@item -fstrict-calling-conventions
++@opindex fstrict-calling-conventions
++Use strict ABI calling conventions even with local functions.
++This disable certain optimizations that may cause GCC to call local
++functions in a manner other than that described by the ABI.
++
+ @item -fstrict-overflow
+ @opindex fstrict-overflow
+ Allow the compiler to assume strict signed overflow rules, depending
+@@ -11549,6 +11556,10 @@
  @opindex mcmodel=large
  Generate code for the large model: This model makes no assumptions
  about addresses and sizes of sections.
@@ -841,7 +879,7 @@ diff -dubr gcc-4.4.7/gcc/doc/invoke.texi gcc-4.4.7.illumos/gcc/doc/invoke.texi
  @end table
  
  @node i386 and x86-64 Windows Options
-@@ -15178,6 +15183,23 @@
+@@ -15178,6 +15189,23 @@
  @opindex mno-vis
  With @option{-mvis}, GCC generates code that takes advantage of the UltraSPARC
  Visual Instruction Set extensions.  The default is @option{-mno-vis}.
@@ -865,10 +903,9 @@ diff -dubr gcc-4.4.7/gcc/doc/invoke.texi gcc-4.4.7.illumos/gcc/doc/invoke.texi
  @end table
  
  These @samp{-m} options are supported in addition to the above
-Только в gcc-4.4.7.illumos/gcc/doc: invoke.texi.orig
-diff -dubr gcc-4.4.7/gcc/dwarf2.h gcc-4.4.7.illumos/gcc/dwarf2.h
---- gcc-4.4.7/gcc/dwarf2.h	2009-04-10 03:23:07.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/dwarf2.h	2012-09-27 21:10:52.000000000 +0400
+diff -dubrN orig/gcc/dwarf2.h source/gcc/dwarf2.h
+--- orig/gcc/dwarf2.h	2009-04-10 03:23:07.000000000 +0400
++++ source/gcc/dwarf2.h	2013-01-30 19:23:07.815089917 +0400
 @@ -377,6 +377,8 @@
      DW_AT_GNU_vector = 0x2107,
      /* VMS extensions.  */
@@ -878,9 +915,9 @@ diff -dubr gcc-4.4.7/gcc/dwarf2.h gcc-4.4.7.illumos/gcc/dwarf2.h
      /* UPC extension.  */
      DW_AT_upc_threads_scaled = 0x3210,
      /* PGI (STMicroelectronics) extensions.  */
-diff -dubr gcc-4.4.7/gcc/dwarf2out.c gcc-4.4.7.illumos/gcc/dwarf2out.c
---- gcc-4.4.7/gcc/dwarf2out.c	2011-04-08 01:27:59.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/dwarf2out.c	2012-09-27 21:10:53.000000000 +0400
+diff -dubrN orig/gcc/dwarf2out.c source/gcc/dwarf2out.c
+--- orig/gcc/dwarf2out.c	2011-04-08 01:27:59.000000000 +0400
++++ source/gcc/dwarf2out.c	2013-01-30 19:23:07.857543794 +0400
 @@ -9362,10 +9362,6 @@
  
    base_type_result = new_die (DW_TAG_base_type, comp_unit_die, type);
@@ -945,9 +982,9 @@ diff -dubr gcc-4.4.7/gcc/dwarf2out.c gcc-4.4.7.illumos/gcc/dwarf2out.c
  	at_import_die = force_type_die (TREE_TYPE (decl));
        /* For namespace N { typedef void T; } using N::T; base_type_die
  	 returns NULL, but DW_TAG_imported_declaration requires
-diff -dubr gcc-4.4.7/gcc/expr.c gcc-4.4.7.illumos/gcc/expr.c
---- gcc-4.4.7/gcc/expr.c	2011-07-21 13:39:16.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/expr.c	2012-09-27 21:10:53.000000000 +0400
+diff -dubrN orig/gcc/expr.c source/gcc/expr.c
+--- orig/gcc/expr.c	2011-07-21 13:39:16.000000000 +0400
++++ source/gcc/expr.c	2013-01-30 19:23:07.940241856 +0400
 @@ -79,6 +79,10 @@
  #endif
  #endif
@@ -969,10 +1006,9 @@ diff -dubr gcc-4.4.7/gcc/expr.c gcc-4.4.7.illumos/gcc/expr.c
  	  gcc_assert (GET_MODE (decl_rtl) == pmode);
  
  	  temp = gen_lowpart_SUBREG (mode, decl_rtl);
-Только в gcc-4.4.7.illumos/gcc: expr.c.orig
-diff -dubr gcc-4.4.7/gcc/function.c gcc-4.4.7.illumos/gcc/function.c
---- gcc-4.4.7/gcc/function.c	2010-08-17 00:24:54.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/function.c	2012-09-27 21:10:53.000000000 +0400
+diff -dubrN orig/gcc/function.c source/gcc/function.c
+--- orig/gcc/function.c	2010-08-17 00:24:54.000000000 +0400
++++ source/gcc/function.c	2013-01-30 19:23:07.962827566 +0400
 @@ -83,6 +83,10 @@
  #define NAME__MAIN "__main"
  #endif
@@ -994,10 +1030,9 @@ diff -dubr gcc-4.4.7/gcc/function.c gcc-4.4.7.illumos/gcc/function.c
  
    parmreg = gen_reg_rtx (promoted_nominal_mode);
  
-Только в gcc-4.4.7.illumos/gcc: function.c.orig
-diff -dubr gcc-4.4.7/gcc/Makefile.in gcc-4.4.7.illumos/gcc/Makefile.in
---- gcc-4.4.7/gcc/Makefile.in	2010-09-07 15:07:31.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/Makefile.in	2012-09-27 21:10:53.000000000 +0400
+diff -dubrN orig/gcc/Makefile.in source/gcc/Makefile.in
+--- orig/gcc/Makefile.in	2010-09-07 15:07:31.000000000 +0400
++++ source/gcc/Makefile.in	2013-01-30 19:23:07.990739691 +0400
 @@ -4725,7 +4725,7 @@
  # script does that.
  .po.gmo:
@@ -1007,10 +1042,9 @@ diff -dubr gcc-4.4.7/gcc/Makefile.in gcc-4.4.7.illumos/gcc/Makefile.in
  
  # The new .po has to be gone over by hand, so we deposit it into
  # build/po with a different extension.
-Только в gcc-4.4.7.illumos/gcc/testsuite: ChangeLog.orig
-diff -dubr gcc-4.4.7/gcc/testsuite/gcc.dg/pragma-align-2.c gcc-4.4.7.illumos/gcc/testsuite/gcc.dg/pragma-align-2.c
---- gcc-4.4.7/gcc/testsuite/gcc.dg/pragma-align-2.c	2008-09-23 13:42:50.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/testsuite/gcc.dg/pragma-align-2.c	2012-09-27 21:10:53.000000000 +0400
+diff -dubrN orig/gcc/testsuite/gcc.dg/pragma-align-2.c source/gcc/testsuite/gcc.dg/pragma-align-2.c
+--- orig/gcc/testsuite/gcc.dg/pragma-align-2.c	2008-09-23 13:42:50.000000000 +0400
++++ source/gcc/testsuite/gcc.dg/pragma-align-2.c	2013-01-30 19:23:08.036806773 +0400
 @@ -25,9 +25,9 @@
  #pragma align bad_align		/* { dg-warning "malformed" } */
  #pragma align 1(bad_align	/* { dg-warning "malformed" } */
@@ -1033,9 +1067,46 @@ diff -dubr gcc-4.4.7/gcc/testsuite/gcc.dg/pragma-align-2.c gcc-4.4.7.illumos/gcc
    if (__alignof__ (x32) < 32)
      abort ();
  
-diff -dubr gcc-4.4.7/gcc/testsuite/lib/gcc-dg.exp gcc-4.4.7.illumos/gcc/testsuite/lib/gcc-dg.exp
---- gcc-4.4.7/gcc/testsuite/lib/gcc-dg.exp	2009-04-22 15:35:25.000000000 +0400
-+++ gcc-4.4.7.illumos/gcc/testsuite/lib/gcc-dg.exp	2012-09-27 21:11:00.000000000 +0400
+diff -dubrN orig/gcc/testsuite/gcc.target/i386/local.c source/gcc/testsuite/gcc.target/i386/local.c
+--- orig/gcc/testsuite/gcc.target/i386/local.c	2007-08-22 13:59:14.000000000 +0400
++++ source/gcc/testsuite/gcc.target/i386/local.c	2013-01-30 19:23:38.544750245 +0400
+@@ -1,5 +1,6 @@
+ /* { dg-do compile } */
+-/* { dg-options "-O2 -funit-at-a-time" } */
++/* { dg-options "-O2 -funit-at-a-time -fno-strict-calling-conventions" { target ilp32 } } */
++/* { dg-options "-O2 -funit-at-a-time" { target lp64 } } */
+ /* { dg-final { scan-assembler "magic\[^\\n\]*eax" { target ilp32 } } } */
+ /* { dg-final { scan-assembler "magic\[^\\n\]*edi" { target lp64 } } } */
+ 
+diff -dubrN orig/gcc/testsuite/gcc.target/i386/strict-cc.c source/gcc/testsuite/gcc.target/i386/strict-cc.c
+--- orig/gcc/testsuite/gcc.target/i386/strict-cc.c	1970-01-01 03:00:00.000000000 +0300
++++ source/gcc/testsuite/gcc.target/i386/strict-cc.c	2013-01-30 19:23:38.545793845 +0400
+@@ -0,0 +1,22 @@
++/* { dg-do compile { target { ilp32 } } } */
++/* { dg-options "-O2 -funit-at-a-time -fstrict-calling-conventions"  } */
++/* { dg-final { scan-assembler "pushl.*\\\$1" } } */
++/* { dg-final { scan-assembler "pushl.*\\\$2" } } */
++/* { dg-final { scan-assembler "pushl.*\\\$3" } } */
++/* { dg-final { scan-assembler "pushl.*\\\$4" } } */
++/* { dg-final { scan-assembler "pushl.*\\\$5" } } */
++
++#include <stdio.h>
++
++/* Verify that local calling convention is not used if strict conventions.  */
++static t(int, int, int, int, int) __attribute__ ((noinline));
++
++m()
++{
++    t(1, 2, 3, 4, 5);
++}
++
++static t(int a, int b, int c, int d, int e)
++{
++    printf("%d\n", a, b, c, d, e);
++}
+diff -dubrN orig/gcc/testsuite/lib/gcc-dg.exp source/gcc/testsuite/lib/gcc-dg.exp
+--- orig/gcc/testsuite/lib/gcc-dg.exp	2009-04-22 15:35:25.000000000 +0400
++++ source/gcc/testsuite/lib/gcc-dg.exp	2013-01-30 19:23:08.040791419 +0400
 @@ -343,6 +343,37 @@
      }
  }
@@ -1074,9 +1145,9 @@ diff -dubr gcc-4.4.7/gcc/testsuite/lib/gcc-dg.exp gcc-4.4.7.illumos/gcc/testsuit
  # Prune any messages matching ARGS[1] (a regexp) from test output.
  proc dg-prune-output { args } {
      global additional_prunes
-diff -dubr gcc-4.4.7/gcc/varasm.c gcc-4.4.7.illumos/gcc/varasm.c
---- gcc-4.4.7/gcc/varasm.c	2010-01-20 14:27:49.000000000 +0300
-+++ gcc-4.4.7.illumos/gcc/varasm.c	2012-09-27 21:11:00.000000000 +0400
+diff -dubrN orig/gcc/varasm.c source/gcc/varasm.c
+--- orig/gcc/varasm.c	2010-01-20 14:27:49.000000000 +0300
++++ source/gcc/varasm.c	2013-01-30 19:23:08.073738212 +0400
 @@ -5484,6 +5484,9 @@
  #endif
      }
@@ -1087,9 +1158,9 @@ diff -dubr gcc-4.4.7/gcc/varasm.c gcc-4.4.7.illumos/gcc/varasm.c
    /* We must force creation of DECL_RTL for debug info generation, even though
       we don't use it here.  */
    make_decl_rtl (decl);
-diff -dubr gcc-4.4.7/intl/configure gcc-4.4.7.illumos/intl/configure
---- gcc-4.4.7/intl/configure	2010-10-02 15:40:32.000000000 +0400
-+++ gcc-4.4.7.illumos/intl/configure	2012-09-27 21:11:00.000000000 +0400
+diff -dubrN orig/intl/configure source/intl/configure
+--- orig/intl/configure	2010-10-02 15:40:32.000000000 +0400
++++ source/intl/configure	2013-01-30 19:23:08.149881834 +0400
 @@ -1557,8 +1557,8 @@
        test -z "$ac_dir" && ac_dir=.
        for ac_exec_ext in '' $ac_executable_extensions; do
@@ -1112,10 +1183,9 @@ diff -dubr gcc-4.4.7/intl/configure gcc-4.4.7.illumos/intl/configure
        : ;
      else
        GMSGFMT=`echo "$GMSGFMT" | sed -e 's,^.*/,,'`
-Только в gcc-4.4.7.illumos/libcpp: ChangeLog.orig
-diff -dubr gcc-4.4.7/libcpp/directives.c gcc-4.4.7.illumos/libcpp/directives.c
---- gcc-4.4.7/libcpp/directives.c	2011-01-05 02:18:52.000000000 +0300
-+++ gcc-4.4.7.illumos/libcpp/directives.c	2012-09-27 21:11:00.000000000 +0400
+diff -dubrN orig/libcpp/directives.c source/libcpp/directives.c
+--- orig/libcpp/directives.c	2011-01-05 02:18:52.000000000 +0300
++++ source/libcpp/directives.c	2013-01-30 19:23:08.173281020 +0400
 @@ -152,11 +152,11 @@
  D(pragma,	T_PRAGMA,	STDC89,    IN_I)	   /*    195 */ \
  D(warning,	T_WARNING,	EXTENSION, 0)		   /*     22 */ \
@@ -1130,9 +1200,9 @@ diff -dubr gcc-4.4.7/libcpp/directives.c gcc-4.4.7.illumos/libcpp/directives.c
  
  /* #sccs is synonymous with #ident.  */
  #define do_sccs do_ident
-diff -dubr gcc-4.4.7/libstdc++-v3/acinclude.m4 gcc-4.4.7.illumos/libstdc++-v3/acinclude.m4
---- gcc-4.4.7/libstdc++-v3/acinclude.m4	2009-05-06 13:00:57.000000000 +0400
-+++ gcc-4.4.7.illumos/libstdc++-v3/acinclude.m4	2012-09-27 21:11:00.000000000 +0400
+diff -dubrN orig/libstdc++-v3/acinclude.m4 source/libstdc++-v3/acinclude.m4
+--- orig/libstdc++-v3/acinclude.m4	2009-05-06 13:00:57.000000000 +0400
++++ source/libstdc++-v3/acinclude.m4	2013-01-30 19:23:08.179516295 +0400
 @@ -2444,7 +2444,11 @@
    old_CXXFLAGS="$CXXFLAGS"
    
@@ -1146,9 +1216,9 @@ diff -dubr gcc-4.4.7/libstdc++-v3/acinclude.m4 gcc-4.4.7.illumos/libstdc++-v3/ac
  
    # Fake what AC_TRY_COMPILE does, without linking as this is
    # unnecessary for a builtins test.
-diff -dubr gcc-4.4.7/libstdc++-v3/configure gcc-4.4.7.illumos/libstdc++-v3/configure
---- gcc-4.4.7/libstdc++-v3/configure	2009-08-26 23:04:11.000000000 +0400
-+++ gcc-4.4.7.illumos/libstdc++-v3/configure	2012-09-27 21:11:00.000000000 +0400
+diff -dubrN orig/libstdc++-v3/configure source/libstdc++-v3/configure
+--- orig/libstdc++-v3/configure	2009-08-26 23:04:11.000000000 +0400
++++ source/libstdc++-v3/configure	2013-01-30 19:23:08.256349286 +0400
 @@ -14758,7 +14758,11 @@
    old_CXXFLAGS="$CXXFLAGS"
  
@@ -1162,4 +1232,3 @@ diff -dubr gcc-4.4.7/libstdc++-v3/configure gcc-4.4.7.illumos/libstdc++-v3/confi
  
    # Fake what AC_TRY_COMPILE does, without linking as this is
    # unnecessary for a builtins test.
-Только в gcc-4.4.7.illumos/libstdc++-v3/testsuite/27_io/basic_istream/extractors_arithmetic/char: 12.cc.orig
