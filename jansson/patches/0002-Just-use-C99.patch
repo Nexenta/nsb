@@ -1,0 +1,53 @@
+From 179d9026aa4d6d2b9a0def85424c0e8eff240fb5 Mon Sep 17 00:00:00 2001
+From: Igor Pashev <igor.pashev@nexenta.com>
+Date: Thu, 31 Jan 2013 10:15:31 +0400
+Subject: [PATCH 2/3] Just use C99
+
+---
+ configure.ac |    2 +-
+ src/value.c  |    9 ---------
+ 2 files changed, 1 insertions(+), 10 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index a2042b3..6455d7f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR([src/value.c])
+ AC_CONFIG_HEADERS([config.h])
+ 
+ # Checks for programs.
+-AC_PROG_CC
++AC_PROG_CC_C99
+ AC_PROG_LIBTOOL
+ 
+ # Checks for libraries.
+diff --git a/src/value.c b/src/value.c
+index 003b5f3..e671377 100644
+--- a/src/value.c
++++ b/src/value.c
+@@ -5,7 +5,6 @@
+  * it under the terms of the MIT license. See LICENSE for details.
+  */
+ 
+-#define _GNU_SOURCE
+ 
+ #include <stddef.h>
+ #include <stdlib.h>
+@@ -17,14 +16,6 @@
+ #include "jansson_private.h"
+ #include "utf.h"
+ 
+-/* Work around nonstandard isnan() and isinf() implementations */
+-#ifndef isnan
+-static JSON_INLINE int isnan(double x) { return x != x; }
+-#endif
+-#ifndef isinf
+-static JSON_INLINE int isinf(double x) { return !isnan(x) && isnan(x - x); }
+-#endif
+-
+ static JSON_INLINE void json_init(json_t *json, json_type type)
+ {
+     json->type = type;
+-- 
+1.7.3.2
+

@@ -1,0 +1,61 @@
+From b86f02ac1cd825bb81bff506b841065fdd589940 Mon Sep 17 00:00:00 2001
+From: Igor Pashev <igor.pashev@nexenta.com>
+Date: Thu, 31 Jan 2013 09:59:16 +0400
+Subject: [PATCH 1/3] Do not play with GCC
+
+---
+ configure.ac                |    1 -
+ src/Makefile.am             |    4 ----
+ test/bin/Makefile.am        |    1 -
+ test/suites/api/Makefile.am |    1 -
+ 4 files changed, 0 insertions(+), 7 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 91d783f..a2042b3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -9,7 +9,6 @@ AC_CONFIG_HEADERS([config.h])
+ # Checks for programs.
+ AC_PROG_CC
+ AC_PROG_LIBTOOL
+-AM_CONDITIONAL([GCC], [test x$GCC = xyes])
+ 
+ # Checks for libraries.
+ 
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 9d040f6..08685ac 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -23,7 +23,3 @@ libjansson_la_LDFLAGS = \
+ 	-export-symbols-regex '^json_' \
+ 	-version-info 8:0:4
+ 
+-if GCC
+-# These flags are gcc specific
+-AM_CFLAGS = -Wall -Wextra -Wdeclaration-after-statement -Werror
+-endif
+diff --git a/test/bin/Makefile.am b/test/bin/Makefile.am
+index 478f62b..63b6dce 100644
+--- a/test/bin/Makefile.am
++++ b/test/bin/Makefile.am
+@@ -1,6 +1,5 @@
+ check_PROGRAMS = json_process
+ 
+ AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
+-AM_CFLAGS = -Wall -Werror
+ LDFLAGS = -static  # for speed and Valgrind
+ LDADD = $(top_builddir)/src/libjansson.la
+diff --git a/test/suites/api/Makefile.am b/test/suites/api/Makefile.am
+index 2b1746d..1dbdd2b 100644
+--- a/test/suites/api/Makefile.am
++++ b/test/suites/api/Makefile.am
+@@ -30,6 +30,5 @@ test_simple_SOURCES = test_simple.c util.h
+ test_unpack_SOURCES = test_unpack.c util.h
+ 
+ AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
+-AM_CFLAGS = -Wall -Werror
+ LDFLAGS = -static  # for speed and Valgrind
+ LDADD = $(top_builddir)/src/libjansson.la
+-- 
+1.7.3.2
+

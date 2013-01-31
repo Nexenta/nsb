@@ -1,0 +1,295 @@
+diff --git a/.travis.yml b/.travis.yml
+new file mode 100644
+index 0000000..bd4b160
+--- /dev/null
++++ b/.travis.yml
+@@ -0,0 +1,5 @@
++language: c
++compiler:
++  - gcc
++  - clang
++script: autoreconf -f -i && ./configure && make check
+diff --git a/README.rst b/README.rst
+index 4607125..a01cbc0 100644
+--- a/README.rst
++++ b/README.rst
+@@ -1,6 +1,10 @@
+ Jansson README
+ ==============
+ 
++.. image:: https://travis-ci.org/akheron/jansson.png
++  :alt: Build status
++  :target: https://travis-ci.org/akheron/jansson
++
+ Jansson_ is a C library for encoding, decoding and manipulating JSON
+ data. Its main features and design principles are:
+ 
+diff --git a/configure.ac b/configure.ac
+index 3b595a4..91d783f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1,5 +1,5 @@
+ AC_PREREQ([2.60])
+-AC_INIT([jansson], [2.4], [petri@digip.org])
++AC_INIT([jansson], [2.5-dev], [petri@digip.org])
+ 
+ AM_INIT_AUTOMAKE([1.10 foreign])
+ 
+diff --git a/doc/conf.py b/doc/conf.py
+index 6010904..1f667ed 100644
+--- a/doc/conf.py
++++ b/doc/conf.py
+@@ -48,7 +48,7 @@ copyright = u'2009-2012, Petri Lehtinen'
+ # built documents.
+ #
+ # The short X.Y version.
+-version = '2.4'
++version = '2.5-dev'
+ # The full version, including alpha/beta/rc tags.
+ release = version
+ 
+diff --git a/release.sh b/release.sh
+new file mode 100755
+index 0000000..c2551f8
+--- /dev/null
++++ b/release.sh
+@@ -0,0 +1,70 @@
++#!/bin/sh
++#
++# Use this script to easily make releases of Jansson. It configures
++# the source tree, and builds and signs all tarballs.
++
++die() {
++    echo $1 >&2
++    exit 1
++}
++
++confirm() {
++    local answer
++    read -p "$1 [yN]: " answer
++    [ "$answer" = "Y" -o "$answer" = "y" ] || exit 0
++}
++
++set -e
++[ -f configure.ac ] || die "Must be run at project root directory"
++
++# Determine version
++v=$(grep AC_INIT configure.ac | sed -r 's/.*, \[(.+?)\],.*/\1/')
++[ -n "$v" ] || die "Unable to determine version"
++confirm "Version is $v, proceed?"
++
++# Sanity checks
++vi=$(grep version-info src/Makefile.am | sed 's/^[ \t]*//g' | cut -d" " -f2)
++confirm "Libtool version-info is $vi, proceed?"
++
++r=$(grep 'Released ' CHANGES | head -n 1)
++confirm "Last CHANGES entry says \"$r\", proceed??"
++
++dv=$(grep ^version doc/conf.py | sed -r "s/.*'(.*)'.*/\1/")
++if [ "$dv" != "$v" ]; then
++    die "Documentation version ($dv) doesn't match library version"
++fi
++
++[ -f Makefile ] && make distclean || true
++rm -f jansson-$v.tar.*
++rm -rf jansson-$v-doc
++rm -f jansson-$v-doc.tar.*
++
++autoreconf -fi
++./configure
++
++# Run tests and make gz source tarball
++: ${VALGRIND:=1}
++export VALGRIND
++make distcheck
++
++# Make bzip2 source tarball
++make dist-bzip2
++
++# Sign source tarballs
++for s in gz bz2; do
++    gpg --detach-sign --armor jansson-$v.tar.$s
++done
++
++# Build documentation
++make html
++mv doc/_build/html jansson-$v-doc
++
++# Make and sign documentation tarballs
++for s in gz bz2; do
++    [ $s = gz ] && compress=gzip
++    [ $s = bz2 ] && compress=bzip2
++    tar cf - jansson-$v-doc | $compress -9 -c > jansson-$v-doc.tar.$s
++    gpg --detach-sign --armor jansson-$v-doc.tar.$s
++done
++
++echo "All done"
+diff --git a/src/dump.c b/src/dump.c
+index 2c7dee9..bbf87d0 100644
+--- a/src/dump.c
++++ b/src/dump.c
+@@ -38,7 +38,7 @@ static int dump_to_file(const char *buffer, size_t size, void *data)
+ }
+ 
+ /* 32 spaces (the maximum indentation size) */
+-static char whitespace[] = "                                ";
++static const char whitespace[] = "                                ";
+ 
+ static int dump_indent(size_t flags, int depth, int space, json_dump_callback_t dump, void *data)
+ {
+diff --git a/src/hashtable.c b/src/hashtable.c
+index 76cf69b..bcbaa8c 100644
+--- a/src/hashtable.c
++++ b/src/hashtable.c
+@@ -74,7 +74,7 @@ static void insert_to_bucket(hashtable_t *hashtable, bucket_t *bucket,
+     }
+ }
+ 
+-static size_t primes[] = {
++static const size_t primes[] = {
+     5, 13, 23, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593,
+     49157, 98317, 196613, 393241, 786433, 1572869, 3145739, 6291469,
+     12582917, 25165843, 50331653, 100663319, 201326611, 402653189,
+diff --git a/src/jansson.h b/src/jansson.h
+index 352c6ce..ec384d8 100644
+--- a/src/jansson.h
++++ b/src/jansson.h
+@@ -22,10 +22,10 @@ extern "C" {
+ 
+ #define JANSSON_MAJOR_VERSION  2
+ #define JANSSON_MINOR_VERSION  4
+-#define JANSSON_MICRO_VERSION  0
++#define JANSSON_MICRO_VERSION  99
+ 
+ /* Micro version is omitted if it's 0 */
+-#define JANSSON_VERSION  "2.4"
++#define JANSSON_VERSION  "2.5-dev"
+ 
+ /* Version as a 3-byte hex number, e.g. 0x010201 == 1.2.1. Use this
+    for numeric comparisons, e.g. #if JANSSON_VERSION_HEX >= ... */
+@@ -47,7 +47,7 @@ typedef enum {
+     JSON_NULL
+ } json_type;
+ 
+-typedef struct {
++typedef struct json_t {
+     json_type type;
+     size_t refcount;
+ } json_t;
+diff --git a/src/load.c b/src/load.c
+index d88a704..16ff53d 100644
+--- a/src/load.c
++++ b/src/load.c
+@@ -37,7 +37,7 @@
+ #define l_isalpha(c)  (l_isupper(c) || l_islower(c))
+ #define l_isdigit(c)  ('0' <= (c) && (c) <= '9')
+ #define l_isxdigit(c) \
+-    (l_isdigit(c) || 'A' <= (c) || (c) <= 'F' || 'a' <= (c) || (c) <= 'f')
++    (l_isdigit(c) || ('A' <= (c) && (c) <= 'F') || ('a' <= (c) && (c) <= 'f'))
+ 
+ /* Read one byte from stream, convert to unsigned char, then int, and
+    return. return EOF on end of file. This corresponds to the
+@@ -447,7 +447,7 @@ out:
+ }
+ 
+ #if JSON_INTEGER_IS_LONG_LONG
+-#ifdef _MSC_VER // Microsoft Visual Studio
++#ifdef _MSC_VER  /* Microsoft Visual Studio */
+ #define json_strtoint     _strtoi64
+ #else
+ #define json_strtoint     strtoll
+diff --git a/src/pack_unpack.c b/src/pack_unpack.c
+index 39db9b8..18f9ccb 100644
+--- a/src/pack_unpack.c
++++ b/src/pack_unpack.c
+@@ -21,7 +21,7 @@ typedef struct {
+     int column;
+ } scanner_t;
+ 
+-static const char *type_names[] = {
++static const char * const type_names[] = {
+     "object",
+     "array",
+     "string",
+@@ -34,7 +34,7 @@ static const char *type_names[] = {
+ 
+ #define type_name(x) type_names[json_typeof(x)]
+ 
+-static const char *unpack_value_starters = "{[siIbfFOon";
++static const char unpack_value_starters[] = "{[siIbfFOon";
+ 
+ 
+ static void scanner_init(scanner_t *s, json_error_t *error,
+diff --git a/src/value.c b/src/value.c
+index ba9908e..003b5f3 100644
+--- a/src/value.c
++++ b/src/value.c
+@@ -509,7 +509,10 @@ int json_array_remove(json_t *json, size_t index)
+ 
+     json_decref(array->table[index]);
+ 
+-    array_move(array, index, index + 1, array->entries - index);
++    /* If we're removing the last element, nothing has to be moved */
++    if(index < array->entries - 1)
++        array_move(array, index, index + 1, array->entries - index - 1);
++
+     array->entries--;
+ 
+     return 0;
+diff --git a/test/bin/Makefile.am b/test/bin/Makefile.am
+index 346db5d..478f62b 100644
+--- a/test/bin/Makefile.am
++++ b/test/bin/Makefile.am
+@@ -1,6 +1,6 @@
+ check_PROGRAMS = json_process
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/src
++AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
+ AM_CFLAGS = -Wall -Werror
+ LDFLAGS = -static  # for speed and Valgrind
+ LDADD = $(top_builddir)/src/libjansson.la
+diff --git a/test/suites/api/Makefile.am b/test/suites/api/Makefile.am
+index 9e60f48..2b1746d 100644
+--- a/test/suites/api/Makefile.am
++++ b/test/suites/api/Makefile.am
+@@ -29,7 +29,7 @@ test_pack_SOURCES = test_pack.c util.h
+ test_simple_SOURCES = test_simple.c util.h
+ test_unpack_SOURCES = test_unpack.c util.h
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/src
++AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src
+ AM_CFLAGS = -Wall -Werror
+ LDFLAGS = -static  # for speed and Valgrind
+ LDADD = $(top_builddir)/src/libjansson.la
+diff --git a/test/suites/api/test_array.c b/test/suites/api/test_array.c
+index 4585db9..b20637f 100644
+--- a/test/suites/api/test_array.c
++++ b/test/suites/api/test_array.c
+@@ -206,6 +206,7 @@ static void test_insert(void)
+ static void test_remove(void)
+ {
+     json_t *array, *five, *seven;
++    int i;
+ 
+     array = json_array();
+     five = json_integer(5);
+@@ -253,6 +254,19 @@ static void test_remove(void)
+        json_array_get(array, 2) != seven)
+         fail("remove works incorrectly");
+ 
++    json_decref(array);
++
++    array = json_array();
++    for(i = 0; i < 4; i++) {
++        json_array_append(array, five);
++        json_array_append(array, seven);
++    }
++    if(json_array_size(array) != 8)
++        fail("unable to append 8 items to array");
++
++    /* Remove an element from a "full" array. */
++    json_array_remove(array, 5);
++
+     json_decref(five);
+     json_decref(seven);
+     json_decref(array);

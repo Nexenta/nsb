@@ -1,0 +1,99 @@
+From f25f30260896b31338876bf57cda416c0c08ee82 Mon Sep 17 00:00:00 2001
+From: Igor Pashev <igor.pashev@nexenta.com>
+Date: Thu, 31 Jan 2013 11:05:12 +0400
+Subject: [PATCH 3/3] Remove check-exports test.
+
+This test is inadequate in many ways:
+
+1. Solaris linker adds some extra global symbols like _fini or _init.
+2. libtool can pass wrong option to GNU ld
+   (http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13201),
+   thus many other symbols are exported.
+
+The right way to control global symbols is a version script
+(in terms of GNU ld) or a map file (Solaris ld).
+
+libtool actually generates map file for Solaris ld.
+---
+ test/suites/api/Makefile.am   |    2 +-
+ test/suites/api/check-exports |   23 -----------------------
+ test/suites/api/run           |   16 ++++++----------
+ 3 files changed, 7 insertions(+), 34 deletions(-)
+ delete mode 100755 test/suites/api/check-exports
+
+diff --git a/test/suites/api/Makefile.am b/test/suites/api/Makefile.am
+index 1dbdd2b..775264f 100644
+--- a/test/suites/api/Makefile.am
++++ b/test/suites/api/Makefile.am
+@@ -1,4 +1,4 @@
+-EXTRA_DIST = run check-exports
++EXTRA_DIST = run
+ 
+ check_PROGRAMS = \
+ 	test_array \
+diff --git a/test/suites/api/check-exports b/test/suites/api/check-exports
+deleted file mode 100755
+index 1c2ba9a..0000000
+--- a/test/suites/api/check-exports
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#!/bin/sh
+-#
+-# This test checks that libjansson.so exports the correct symbols.
+-#
+-
+-SOFILE="../src/.libs/libjansson.so"
+-
+-# The list of symbols, which the shared object should export, is read
+-# from the def file, which is used in Windows builds
+-grep 'json_' $top_srcdir/src/jansson.def \
+-    | sed -e 's/ //g' \
+-    | sort \
+-    >$test_log/exports
+-
+-nm -D $SOFILE >/dev/null >$test_log/symbols 2>/dev/null \
+-    || exit 77  # Skip if "nm -D" doesn't seem to work
+-
+-grep ' [DT] ' $test_log/symbols | cut -d' ' -f3 | sort >$test_log/output
+-
+-if ! cmp -s $test_log/exports $test_log/output; then
+-    diff -u $test_log/exports $test_log/output >&2
+-    exit 1
+-fi
+diff --git a/test/suites/api/run b/test/suites/api/run
+index 3327e15..cdbab87 100755
+--- a/test/suites/api/run
++++ b/test/suites/api/run
+@@ -7,7 +7,7 @@
+ 
+ is_test() {
+     case "$test_name" in
+-        *.c|check-exports)
++        *.c)
+             return 0
+             ;;
+         *)
+@@ -17,15 +17,11 @@ is_test() {
+ }
+ 
+ run_test() {
+-    if [ "$test_name" = "check-exports" ]; then
+-        test_log=$test_log $test_path >$test_log/stdout 2>$test_log/stderr
+-    else
+-        $test_runner $suite_builddir/${test_name%.c} \
+-            >$test_log/stdout \
+-            2>$test_log/stderr \
+-            || return 1
+-        valgrind_check $test_log/stderr || return 1
+-    fi
++    $test_runner $suite_builddir/${test_name%.c} \
++        >$test_log/stdout \
++        2>$test_log/stderr \
++        || return 1
++    valgrind_check $test_log/stderr || return 1
+ }
+ 
+ show_error() {
+-- 
+1.7.3.2
+
