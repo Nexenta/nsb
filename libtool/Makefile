@@ -1,4 +1,6 @@
-include /usr/share/cibs/rules/ips.mk
+package ?= ips
+
+include /usr/share/cibs/rules/$(package).mk
 include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/autoreconf.mk

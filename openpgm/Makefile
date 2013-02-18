@@ -1,11 +1,13 @@
-include /usr/share/cibs/rules/ips.mk
+package ?= ips
+
+include /usr/share/cibs/rules/$(package).mk
 include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/autoreconf.mk
 include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/64.mk
 
-configure := $(sourcedir)/openpgm/pgm/configure
+configure := $(topdir)/$(sourcedir)/openpgm/pgm/configure
 
 summary := open source implementation of the Pragmatic General Multicast (PGM) specification in RFC 3208
 license := LGPL
