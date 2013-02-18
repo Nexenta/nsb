@@ -1,4 +1,5 @@
-include /usr/share/cibs/rules/ips.mk
+package ?= ips
+include /usr/share/cibs/rules/$(package).mk
 include /usr/share/cibs/rules/copy.mk
 include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/noarch.mk
@@ -33,7 +34,7 @@ build-%-stamp: configure-%-stamp
 	touch $@
 
 install-%-stamp: build-%-stamp
-	cd $(builddir) && python2.6 setup.py install --root="$(protodir)" \
+	cd $(builddir) && python2.6 setup.py install --root="$(topdir)/$(protodir)" \
 		--install-lib=/usr/lib/python2.6/vendor-packages
 	gsed -i 's,#!.*,#!/usr/bin/python2.6,' $(protodir)/usr/bin/gyp
 	touch $@

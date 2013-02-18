@@ -10,9 +10,9 @@ depend fmri=pkg:/library/$(name)-$(so-version)@$(ips-version) type=incorporate
 link path=usr/lib/$(mach64)/libv8.so \
     target=$(libSoname)
 
-file include/v8-debug.h       path=usr/include/v8-debug.h
-file include/v8-preparser.h   path=usr/include/v8-preparser.h
-file include/v8-profiler.h    path=usr/include/v8-profiler.h
-file include/v8-testing.h     path=usr/include/v8-testing.h
-file include/v8.h             path=usr/include/v8.h
-file include/v8stdint.h       path=usr/include/v8stdint.h
+file path=usr/include/v8-debug.h
+file path=usr/include/v8-preparser.h
+file path=usr/include/v8-profiler.h
+file path=usr/include/v8-testing.h
+file path=usr/include/v8.h
+file path=usr/include/v8stdint.h

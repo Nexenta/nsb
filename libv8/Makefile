@@ -59,6 +59,7 @@ install-%-stamp: build-%-stamp
 	mkdir -p $(protodir)/$(libdir)
 	mkdir -p $(protodir)/usr/include
 	cp $(v8out) $(protodir)/$(libdir)/
+	cp $(builddir)/include/*.h $(protodir)/usr/include/
 	touch $@
 
 checksum-v8-3.14.5.3.tar.bz2 := \
