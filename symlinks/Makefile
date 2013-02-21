@@ -1,4 +1,5 @@
-include /usr/share/cibs/rules/ips.mk
+package ?= ips
+include /usr/share/cibs/rules/$(package).mk
 include /usr/share/cibs/rules/git.mk
 include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/64.mk
@@ -26,6 +27,6 @@ build-%-stamp: download-stamp patch-stamp
 	touch $@
 
 install-%-stamp: build-%-stamp
-	mkdir -p $(destdir)/$(bindir)
-	cp $(builddir)/symlinks $(destdir)/$(bindir)
+	mkdir -p $(protodir)/usr/bin
+	cp $(builddir)/symlinks $(protodir)/usr/bin
 	touch $@
