@@ -1,4 +1,5 @@
-include /usr/share/cibs/rules/ips.mk
+package ?= ips
+include /usr/share/cibs/rules/$(package).mk
 include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/patch.mk
 include /usr/share/cibs/rules/32.mk
@@ -54,7 +55,7 @@ configure-options = \
 	--pk11-libname=$(pkcs11.$(bits)) \
 	--prefix=/usr \
 	--openssldir=/etc/openssl \
-	--install_prefix=$(protodir.$(bits)) \
+	--install_prefix=$(topdir)/$(protodir.$(bits)) \
 	--enginesdir=$(enginesdir.$(bits)) \
 	--libdir=$(libdir.$(bits)) \
 	$(configure-options.$(bits)) \
