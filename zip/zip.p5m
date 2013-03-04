@@ -1,0 +1,15 @@
+set name=pkg.fmri value=pkg:/compress/zip@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/bin/zipsplit
+file path=usr/bin/zip
+file path=usr/bin/zipnote
+file path=usr/bin/zipcloak
+file path=usr/share/man/man1/zipsplit.1
+file path=usr/share/man/man1/zip.1
+file path=usr/share/man/man1/zipnote.1
+file path=usr/share/man/man1/zipcloak.1
