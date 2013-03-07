@@ -11,7 +11,7 @@ include /usr/share/cibs/rules/copy.mk
 
 summary := The ZeroMQ messaging library
 license := LGPL
-license-file := COPYING.LESSER
+license-file := $(sourcedir)/COPYING.LESSER
 
 build-depends += \
 	library/libpgm	\
