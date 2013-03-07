@@ -9,8 +9,8 @@ include /usr/share/cibs/rules/64.mk
 summary      := v8 JavaScript engine
 home         := http://code.google.com/p/v8/
 license      := BSD
-license-file := LICENSE.v8
-version      := 3.14.5.3
+license-file := $(sourcedir)/LICENSE.v8
+version      := 3.17.6
 name         := libv8
 libSoname    := libv8.so.$(version)
 so-version   := $(version)
@@ -67,4 +67,10 @@ checksum-v8-3.14.5.3.tar.bz2 := \
     sha1:9b10a66b01e08ca6037c339bafe71a4d68474d26 \
   sha256:f91d851abd284589272f2b338c74e10f07ce667736e8e73cbd301172cb7f75a1 \
     size:10352249
+
+checksum-v8-3.17.6.tar.bz2 := \
+     md5:1933b961d10648f2edfcf916fa32544c \
+    sha1:3ce927cac3c048d418189d56f6e16934cec649ae \
+  sha256:6294138be1d6a2d50935101f8c52ef48c4ba8d95bfbd4798c45d70c229a38302 \
+    size:10496403
 
