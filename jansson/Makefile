@@ -10,7 +10,7 @@ include /usr/share/cibs/rules/64.mk
 
 summary := C library for encoding, decoding and manipulating JSON data
 license := MIT
-license-file := LICENSE
+license-file := $(sourcedir)/LICENSE
 
 home     := http://www.digip.org/jansson/
 name     := jansson
