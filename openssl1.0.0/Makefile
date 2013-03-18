@@ -59,24 +59,28 @@ configure-options = \
 	--enginesdir=$(enginesdir.$(bits)) \
 	--libdir=$(libdir.$(bits)) \
 	$(configure-options.$(bits)) \
+	enable-md2 \
 	no-ec \
 	no-ecdh \
 	no-ecdsa \
-	no-rc3 \
-	no-rc5 \
-	no-mdc2 \
-	no-idea \
 	no-hw_4758_cca \
 	no-hw_aep \
 	no-hw_atalla \
 	no-hw_chil \
+	no-hw_cswift \
 	no-hw_gmp \
 	no-hw_ncipher \
 	no-hw_nuron \
 	no-hw_padlock \
 	no-hw_sureware \
 	no-hw_ubsec \
-	no-hw_cswift \
+	no-idea \
+	no-mdc2 \
+	no-rc3 \
+	no-rc5 \
+	no-seed \
+	no-whirlpool \
+	no-whrlpool \
 	threads \
 	shared \
 	no-static \
