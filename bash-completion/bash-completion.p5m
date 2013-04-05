@@ -10,6 +10,11 @@ dir path=usr/share/bash-completion/helpers
 
 file path=etc/profile.d/bash_completion.sh
 
+file addons/beadm     path=usr/share/bash-completion/completions/beadm
+file addons/bootadm   path=usr/share/bash-completion/completions/bootadm
+file addons/smf       path=usr/share/bash-completion/completions/smf
+file addons/zfsutils  path=usr/share/bash-completion/completions/zfsutils
+
 file path=usr/share/bash-completion/bash_completion
 file path=usr/share/bash-completion/completions/kldunload
 file path=usr/share/bash-completion/completions/smartctl

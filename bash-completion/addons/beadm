@@ -1,0 +1,129 @@
+# *** Public Domain ***
+#
+# Uncomment if do not have zfs bash completion:
+#__zfs_get_editable_properties()
+#{
+#    zfs get 2>&1 | awk '$2 == "YES" {printf("%s=\n", $1)}'
+#}
+#
+#__zpool_list_pools()
+#{
+#    zpool list -H -o name
+#}
+
+__beadm_be_list () {
+    beadm list -H 2>/dev/null | nawk -F';' '{print $1}'
+}
+
+__beadm_be_at_list () {
+    beadm list -H 2>/dev/null | nawk -F';' '{print $1"@"}'
+}
+
+# List of mounted BE and mount points (for unmount command)
+__beadm_unmount_list () {
+    beadm list -H 2>/dev/null | nawk -F';' '$4 != "/" && $4 != "" {print $1" "$4}'
+}
+
+__beadm_nonactive_list () {
+    beadm list -H 2>/dev/null | nawk -F';' '$3 !~ "N" {print $1}'
+}
+
+__beadm_nonactive_reboot_list () {
+    beadm list -H 2>/dev/null | nawk -F';' '$3 !~ "R" {print $1}'
+}
+
+__beadm_snapshot_list () {
+    beadm list -s -H 2>/dev/null | nawk -F';' '{print $2}'
+}
+
+_beadm () {
+    local cur prev opts line
+    COMPREPLY=()
+
+    # Allow @ (at-sign) for snapshots:
+    shopt -u hostcomplete
+
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    line="${COMP_LINE}"
+    cmd="${COMP_WORDS[1]}"
+
+    if [[ ${COMP_CWORD} -eq 1 ]]; then
+        COMPREPLY=( $(compgen -W "create destroy list mount \
+        unmount rename activate rollback" -- $cur) )
+        return
+    fi
+
+    case "$cmd" in
+        create)
+        case "$prev" in
+            -e)
+            COMPREPLY=( $(compgen -W "$(__beadm_nonactive_list) $(__beadm_snapshot_list)" -- $cur) )
+            ;;
+            -p)
+            COMPREPLY=( $(compgen -W "$(__zpool_list_pools)" -- $cur) )
+            ;;
+            -o)
+            COMPREPLY=( $(compgen -W "$(__zfs_get_editable_properties)" -- $cur) )
+            ;;
+            *)
+            COMPREPLY=( $(compgen -W "-a -d -e -o -p -v $(__beadm_be_at_list)" -- $cur) )
+            if [[ ${#COMPREPLY[@]} == 1 && ${COMPREPLY[0]} != -* ]]; then
+                compopt -o nospace
+            fi
+            ;;
+        esac
+        ;;
+        destroy)
+        case "$line" in
+            *"-s "*)
+            COMPREPLY=( $(compgen -W "$(__beadm_nonactive_list) -f -F -v" -- $cur) )
+            ;;
+            *)
+            COMPREPLY=( $(compgen -W "$(__beadm_snapshot_list) $(__beadm_nonactive_list) -f -s -F -v" -- $cur) )
+            ;;
+        esac
+        ;;
+        list)
+        case "$line" in
+            *"-a "*)
+            COMPREPLY=( $(compgen -W "$(__beadm_be_list) -H -v" -- $cur) )
+            ;;
+            *"-d "*)
+            COMPREPLY=( $(compgen -W "$(__beadm_be_list) -s -H -v" -- $cur) )
+            ;;
+            *"-s "*)
+            COMPREPLY=( $(compgen -W "$(__beadm_be_list) -d -H -v" -- $cur) )
+            ;;
+            *)
+            COMPREPLY=( $(compgen -W "$(__beadm_be_list) -a -d -s -H -v" -- $cur) )
+            ;;
+        esac
+        ;;
+        mount)
+        case "$prev" in
+            mount)
+            COMPREPLY=( $(compgen -W "$(__beadm_be_list) -v" -- $cur) )
+            ;;
+            -v)
+            COMPREPLY=( $(compgen -W "$(__beadm_be_list)" -- $cur) )
+            ;;
+            *)
+            _cd
+            ;;
+        esac
+        ;;
+        unmount)
+        COMPREPLY=( $(compgen -W "$(__beadm_unmount_list) -v -f" -- $cur) )
+        ;;
+        rollback)
+        COMPREPLY=( $(compgen -W "$(__beadm_snapshot_list) -v" -- $cur) )
+        ;;
+        activate)
+        COMPREPLY=( $(compgen -W "$(__beadm_nonactive_reboot_list) -v" -- $cur) )
+        ;;
+    esac
+
+}
+
+complete -F _beadm beadm
