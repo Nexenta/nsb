@@ -3,6 +3,7 @@ include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/archive.mk
 
 movefiles := /usr/share/cibs/scripts/movefiles
+payload := /usr/share/cibs/scripts/make-payload
 
 $(eval $(call add-variant,default))
 %-default-stamp: bits = 64
@@ -77,7 +78,11 @@ install-default-stamp: make-vars += \
 d := $(protodir.default)
 scriptdir = usr/lib/python$(VER)
 VER := $(pyver)
-d_min := work/proto/python2.7-minimal
+d_min := work/proto/python-minimal
+
+
+python-minimal.p5m: env += proto=$(d_min)
+
 
 install-stamp: postinst-stamp
 postinst-stamp: install-default-stamp
