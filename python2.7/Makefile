@@ -2,6 +2,8 @@ include /usr/share/cibs/rules/ips.mk
 include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/archive.mk
 
+movefiles := /usr/share/cibs/scripts/movefiles
+
 $(eval $(call add-variant,default))
 %-default-stamp: bits = 64
 
@@ -15,6 +17,8 @@ version  := 2.7.3
 home     := http://www.python.org/
 archive  := $(name)-$(version).tar.bz2
 download := http://www.python.org/ftp/python/$(version)/$(archive)
+
+PVER := python$(pyver)
 
 checksum-Python-2.7.3.tar.bz2 := \
      md5:c57477edd6d18bd9eeca2f21add73919 \
@@ -46,6 +50,21 @@ configure-options += \
 	--with-system-ffi \
 	--enable-shared \
 
+MIN_MODS := $(shell awk '/^  / && $$2 == "module" { print $$1 }' \
+		debian/PVER-minimal.README.Debian.in)
+MIN_EXTS := $(shell awk '/^  / && $$2 ~ /^extension/ { print $$1 }' \
+		debian/PVER-minimal.README.Debian.in)
+MIN_BUILTINS := $(shell awk '/^  / && $$2 == "builtin" { print $$1 }' \
+		debian/PVER-minimal.README.Debian.in)
+MIN_PACKAGES := $(shell awk '/^  / && $$2 == "package" { print $$1 }' \
+		debian/PVER-minimal.README.Debian.in)
+MIN_ENCODINGS := $(foreach i, \
+			$(filter-out \
+			  big5% bz2% cp932.py cp949.py cp950.py euc_% \
+			  gb% iso2022% johab.py shift_jis% , \
+			  $(shell cd $(sourcedir)/Lib/encodings && echo *.py)), \
+			encodings/$(i)) \
+		 codecs.py stringprep.py
 
 # We install libpython.X.Y.so.* in usual place (libdir),
 # but runtime libraries go into the place where python
@@ -56,8 +75,9 @@ install-default-stamp: make-vars += \
 
 # Shorter name:
 d := $(protodir.default)
-scriptdir	=  usr/lib/python$(VER)
+scriptdir = usr/lib/python$(VER)
 VER := $(pyver)
+d_min := work/proto/python2.7-minimal
 
 install-stamp: postinst-stamp
 postinst-stamp: install-default-stamp
@@ -69,6 +89,8 @@ postinst-stamp: install-default-stamp
 	rm -f $(d)/usr/lib/pkgconfig/python.pc
 	rm -f $(d)/usr/bin/python2{,-config}
 	rm -f $(d)/usr/share/man/man1/python2{,-config}.1
+	gfind $(d) -name 'wininst*.exe' | gxargs -r rm -f
+
 	: # Symlinks to /usr/bin for some tools
 	ln -sf ../lib/python$(VER)/pdb.py $(d)/usr/bin/pdb$(VER)
 	: # versioned install only
@@ -85,6 +107,29 @@ postinst-stamp: install-default-stamp
 	  --name 'Python2 to Python3 converter' \
 	$(d)/usr/bin/2to3-$(VER) \
 	> $(d)/usr/share/man/man1/2to3-$(VER).1
+
+	: # install minimal set:
+	mkdir -p $(d_min)
+	cd $(d_min) && mkdir -p \
+		etc/$(PVER) \
+		usr/bin \
+		usr/include/$(PVER) \
+		usr/share/man/man1 \
+		$(scriptdir)/lib-dynload \
+		$(scriptdir)/config
+	$(movefiles) -s $(d) -d$(d_min) \
+		usr/bin/python$(VER) \
+		usr/share/man/man1/python$(VER).1 \
+		$(foreach i,$(MIN_MODS),$(scriptdir)/$(i).py) \
+		$(foreach i,$(MIN_PACKAGES),$(scriptdir)/$(i)) \
+		$(foreach i,$(MIN_ENCODINGS),$(scriptdir)/$(i)) \
+		$(scriptdir)/config/Makefile \
+		usr/include/$(PVER)/pyconfig.h \
+		$(scriptdir)/site.py \
+		$(shell cd $(d); for i in $(MIN_EXTS); do \
+			test -e $(scriptdir)/lib-dynload/$$i.so \
+			  && echo $(scriptdir)/lib-dynload/$$i.so; \
+		  done; true)
 
 	touch $@
 
