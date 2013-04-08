@@ -1,6 +1,5 @@
 package ?= ips
 include /usr/share/cibs/rules/$(package).mk
-include /usr/share/cibs/rules/git.mk
 include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/archive.mk
 include /usr/share/cibs/rules/noarch.mk

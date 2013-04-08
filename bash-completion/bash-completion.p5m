@@ -2,7 +2,7 @@ set name=pkg.fmri value=pkg:/shell/bash-completion@$(ips-version)
 set name=pkg.summary value="$(summary)"
 set name=info.upstream-url value="$(home)"
 set name=info.source-url value="$(download)"
-license $(license-file)  license="$(license)"
+license $(license-file) license="$(license)"
 
 dir path=usr/share/bash-completion
 dir path=usr/share/bash-completion/completions
@@ -12,8 +12,12 @@ file path=etc/profile.d/bash_completion.sh
 
 file addons/beadm     path=usr/share/bash-completion/completions/beadm
 file addons/bootadm   path=usr/share/bash-completion/completions/bootadm
-file addons/smf       path=usr/share/bash-completion/completions/smf
-file addons/zfsutils  path=usr/share/bash-completion/completions/zfsutils
+
+file addons/zfs path=usr/share/bash-completion/completions/zfs
+link target=zfs path=usr/share/bash-completion/completions/zpool
+
+file addons/svcadm path=usr/share/bash-completion/completions/svcadm
+link target=svcadm path=usr/share/bash-completion/completions/svcs
 
 file path=usr/share/bash-completion/bash_completion
 file path=usr/share/bash-completion/completions/kldunload

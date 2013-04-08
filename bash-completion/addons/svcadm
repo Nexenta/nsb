@@ -1,6 +1,7 @@
 # svcadm completion                                        -*- shell-script -*-
 #
 # Copyright 2006 Yann Rouillard <yann@opencsw.org>
+# Portions copyright 2013, Nexenta Systems, Inc.
 
 # 
 # svcadm accept any complete FMRI or abreviated FMRI
@@ -137,9 +138,7 @@ _svcadm ()
             fi
         fi
     fi
-} &&
-complete -F _svcadm svcadm
-
+}
 
 _svcs () {
     local cur prev opts line
@@ -167,7 +166,9 @@ _svcs () {
         _smf_complete_fmri "${cur}" "svc:"
     fi
 
-} &&
+}
+
+complete -F _svcadm svcadm
 complete -F _svcs svcs
 
 
