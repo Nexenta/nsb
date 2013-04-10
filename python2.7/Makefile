@@ -1,6 +1,7 @@
 include /usr/share/cibs/rules/ips.mk
 include /usr/share/cibs/rules/autotools.mk
 include /usr/share/cibs/rules/archive.mk
+include /usr/share/cibs/rules/patch.mk
 
 movefiles := /usr/share/cibs/scripts/movefiles
 payload := /usr/share/cibs/scripts/make-payload
@@ -40,7 +41,40 @@ build-depends += \
 	library/tinfo \
 	library/zlib \
 	text/help2man \
+	developer/build/autoconf
 
+define __post_configure
+	egrep \
+	  "^#($$(gawk -v ORS='|' '$$2 ~ /^extension$$/ {print $$1}' debian/PVER-minimal.README.Debian.in)XX)" \
+	  $(sourcedir)/Modules/Setup.dist \
+	    | sed -e 's/^#//' -e 's/-Wl,-Bdynamic//;s/-Wl,-Bstatic//' \
+	    >> $(1)/Modules/Setup.local
+
+	: # unconditionally run makesetup
+	cd $(1) && \
+	  $(topdir)/$(sourcedir)/Modules/makesetup -c $(topdir)/$(sourcedir)/Modules/config.c.in -s Modules \
+	    Modules/Setup.config Modules/Setup.local Modules/Setup
+	mv $(1)/config.c $(1)/Modules/
+
+	: # and fix the timestamps
+	$(MAKE) -C $(1) Makefile Modules/config.c
+
+	: # apply workaround for missing os.fsync
+	sed 's/HAVE_SYNC/HAVE_FSYNC/g' $(1)/pyconfig.h \
+		> $(1)/pyconfig.h.new
+	touch -r $(1)/pyconfig.h $(1)/pyconfig.h.new
+	mv -f $(1)/pyconfig.h.new $(1)/pyconfig.h
+endef
+
+pre-configure-stamp: autoconf-stamp
+autoconf-stamp: patch-stamp
+	cd $(sourcedir) && autoconf
+	touch $@
+
+build-default-stamp: post-configure-stamp
+post-configure-stamp: configure-default-stamp
+	$(call __post_configure,$(builddir))
+	touch $@
 
 configure-options += \
 	--without-gcc \
@@ -79,6 +113,7 @@ d := $(protodir.default)
 scriptdir = usr/lib/python$(VER)
 VER := $(pyver)
 d_min := work/proto/python-minimal
+d_lib := work/proto/libpython
 
 
 python-minimal.p5m: env += proto=$(d_min)
@@ -86,6 +121,8 @@ python-minimal.p5m: env += proto=$(d_min)
 
 install-stamp: postinst-stamp
 postinst-stamp: install-default-stamp
+	cp -p debian/_sysconfigdata.py $(d)/$(scriptdir)/
+
 	mv $(d)/usr/lib/python$(VER)/site-packages \
 		$(d)/usr/lib/python$(VER)/dist-packages
 	: # remove files, which are not packaged
@@ -135,6 +172,21 @@ postinst-stamp: install-default-stamp
 			test -e $(scriptdir)/lib-dynload/$$i.so \
 			  && echo $(scriptdir)/lib-dynload/$$i.so; \
 		  done; true)
+
+	# install libpython:
+	mkdir -p $(d_lib)
+	if ls $(d)/usr/lib/libpython$(pyver).so.* >/dev/null 2>&1; then \
+		$(movefiles) -s $(d) -d $(d_lib) \
+			usr/lib/libpython$(pyver).so.1.0 ; \
+		ln -sf libpython$(pyver).so.1.0 \
+			$(d)/usr/lib/libpython$(pyver).so.1 ; \
+	fi
+	if ls $(d)/usr/lib/$(mach64)/libpython$(pyver).so.* >/dev/null 2>&1; then \
+		$(movefiles) -s $(d) -d$(d_lib) \
+			usr/lib/$(mach64)/libpython$(pyver).so.1.0 ; \
+		ln -sf libpython$(pyver).so.1.0 \
+			$(d)/usr/lib/$(mach64)/libpython$(pyver).so.1 ; \
+	fi
 
 	touch $@
 

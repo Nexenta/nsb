@@ -76,7 +76,6 @@ file path=usr/include/python$(pyver)/pgenheaders.h
 file path=usr/include/python$(pyver)/py_curses.h
 file path=usr/include/python$(pyver)/pyarena.h
 file path=usr/include/python$(pyver)/pycapsule.h
-file path=usr/include/python$(pyver)/pyconfig.h
 file path=usr/include/python$(pyver)/pyctype.h
 file path=usr/include/python$(pyver)/pydebug.h
 file path=usr/include/python$(pyver)/pyerrors.h
@@ -119,11 +118,6 @@ file path=usr/lib/python$(pyver)/config/install-sh
 file path=usr/lib/python$(pyver)/config/libpython$(pyver).a
 file path=usr/lib/python$(pyver)/config/makesetup
 file path=usr/lib/python$(pyver)/config/python.o
-file path=usr/lib/python$(pyver)/distutils/command/wininst-6.0.exe
-file path=usr/lib/python$(pyver)/distutils/command/wininst-7.1.exe
-file path=usr/lib/python$(pyver)/distutils/command/wininst-8.0.exe
-file path=usr/lib/python$(pyver)/distutils/command/wininst-9.0-amd64.exe
-file path=usr/lib/python$(pyver)/distutils/command/wininst-9.0.exe
 
 link path=usr/lib/$(mach64)/libpython$(pyver).so target=libpython$(pyver).so.1
 link path=usr/lib/$(mach64)/libpython$(pyver).a \
