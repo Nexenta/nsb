@@ -181,13 +181,13 @@ postinst-stamp: install-default-stamp
 		$(movefiles) -s $(d) -d $(d_lib) \
 			usr/lib/libpython$(pyver).so.1.0 ; \
 		ln -sf libpython$(pyver).so.1.0 \
-			$(d)/usr/lib/libpython$(pyver).so.1 ; \
+			$(d_lib)/usr/lib/libpython$(pyver).so.1 ; \
 	fi
 	if ls $(d)/usr/lib/$(mach64)/libpython$(pyver).so.* >/dev/null 2>&1; then \
 		$(movefiles) -s $(d) -d$(d_lib) \
 			usr/lib/$(mach64)/libpython$(pyver).so.1.0 ; \
 		ln -sf libpython$(pyver).so.1.0 \
-			$(d)/usr/lib/$(mach64)/libpython$(pyver).so.1 ; \
+			$(d_lib)/usr/lib/$(mach64)/libpython$(pyver).so.1 ; \
 	fi
 
 	touch $@
