@@ -30,6 +30,7 @@ checksum-Python-2.7.3.tar.bz2 := \
 
 build-depends += \
 	compress/bzip2 \
+	developer/build/autoconf \
 	library/libbz2 \
 	library/libdb-5.1 \
 	library/libexpat \
@@ -40,8 +41,8 @@ build-depends += \
 	library/readline \
 	library/tinfo \
 	library/zlib \
+	text/gawk \
 	text/help2man \
-	developer/build/autoconf
 
 define __post_configure
 	egrep \
@@ -121,8 +122,9 @@ python-minimal.p5m: env += proto=$(d_min)
 
 install-stamp: postinst-stamp
 postinst-stamp: install-default-stamp
+	mv $(d)/$(scriptdir)/_sysconfigdata.py \
+		$(d)/$(scriptdir)/_sysconfigdata_nd.py
 	cp -p debian/_sysconfigdata.py $(d)/$(scriptdir)/
-
 	mv $(d)/usr/lib/python$(VER)/site-packages \
 		$(d)/usr/lib/python$(VER)/dist-packages
 	: # remove files, which are not packaged
