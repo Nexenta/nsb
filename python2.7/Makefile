@@ -31,6 +31,7 @@ checksum-Python-2.7.3.tar.bz2 := \
 build-depends += \
 	compress/bzip2 \
 	developer/build/autoconf \
+	file/symlinks \
 	library/libbz2 \
 	library/libdb-5.1 \
 	library/libexpat \
@@ -110,12 +111,14 @@ install-default-stamp: make-vars += \
 	DESTSHARED=$(prefix)/lib/python$(pyver)/lib-dynload
 
 # Shorter name:
-d := $(protodir.default)
-scriptdir = usr/lib/python$(VER)
-VER := $(pyver)
-d_min := work/proto/python-minimal
-d_lib := work/proto/libpython
-
+d         := $(protodir.default)
+b         := $(builddir.default)
+VER       := $(pyver)
+scriptdir := usr/lib/python$(VER)
+d_min     := work/proto/python-minimal
+d_lib     := work/proto/libpython
+d_dev     := work/proto/dev-python
+libdir    := usr/lib$(lib-suffix.$(bits))
 
 python-minimal.p5m: env += proto=$(d_min)
 
@@ -124,6 +127,13 @@ install-stamp: postinst-stamp
 postinst-stamp: install-default-stamp
 	mv $(d)/$(scriptdir)/_sysconfigdata.py \
 		$(d)/$(scriptdir)/_sysconfigdata_nd.py
+	cp $(b)/libpython$(pyver).a \
+		$(d)/$(libdir)/
+	rm $(d)/$(scriptdir)/config/*.a
+	ln -sf $(topdir)/$(d)/$(libdir)/libpython$(pyver).a \
+		$(d)/$(scriptdir)/config/libpython$(pyver).a
+	symlinks -c $(d)/$(scriptdir)/config/
+
 	cp -p debian/_sysconfigdata.py $(d)/$(scriptdir)/
 	mv $(d)/usr/lib/python$(VER)/site-packages \
 		$(d)/usr/lib/python$(VER)/dist-packages
@@ -177,18 +187,24 @@ postinst-stamp: install-default-stamp
 
 	# install libpython:
 	mkdir -p $(d_lib)
-	if ls $(d)/usr/lib/libpython$(pyver).so.* >/dev/null 2>&1; then \
-		$(movefiles) -s $(d) -d $(d_lib) \
-			usr/lib/libpython$(pyver).so.1.0 ; \
-		ln -sf libpython$(pyver).so.1.0 \
-			$(d_lib)/usr/lib/libpython$(pyver).so.1 ; \
-	fi
-	if ls $(d)/usr/lib/$(mach64)/libpython$(pyver).so.* >/dev/null 2>&1; then \
-		$(movefiles) -s $(d) -d$(d_lib) \
-			usr/lib/$(mach64)/libpython$(pyver).so.1.0 ; \
-		ln -sf libpython$(pyver).so.1.0 \
-			$(d_lib)/usr/lib/$(mach64)/libpython$(pyver).so.1 ; \
-	fi
+	$(movefiles) -s $(d) -d $(d_lib) \
+		$(libdir)/libpython$(pyver).so.1.0
+	ln -sf libpython$(pyver).so.1.0 \
+		$(d_lib)/$(libdir)/libpython$(pyver).so.1
+
+	# install developer/python:
+	mkdir -p $(d_dev)
+	mkdir -p $(d_dev)/usr/share/man/man1
+	$(movefiles) -s $(d) -d $(d_dev) \
+		usr/lib/python$(VER)/config \
+		usr/include/python$(VER) \
+		$(libdir)/libpython$(VER).so \
+		$(libdir)/libpython$(VER).a \
+		$(libdir)/pkgconfig/python-$(VER).pc \
+		usr/bin/python$(VER)-config
+	cp -p debian/python-config.1 \
+		$(d_dev)/usr/share/man/man1/python$(VER)-config.1
+
 
 	touch $@
 
