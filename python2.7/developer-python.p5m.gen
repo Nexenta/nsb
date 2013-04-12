@@ -24,6 +24,9 @@ depend fmri=pkg:/library/libpython$(pyver)@$(ips-version) type=incorporate
 depend fmri=pkg:/runtime/python$(pyver)@$(ips-version) type=require
 depend fmri=pkg:/runtime/python$(pyver)@$(ips-version) type=incorporate
 
+<transform file path=.*\.py -> add pkg.depend.bypass-generate .*>
+<transform file path=usr/bin/python.*-config -> add pkg.depend.bypass-generate .*>
+
 META
 
 /usr/share/cibs/scripts/make-payload $proto >> $tmp

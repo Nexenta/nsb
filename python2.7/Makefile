@@ -11,7 +11,7 @@ $(eval $(call add-variant,default))
 
 summary := an interpreted, interactive, object-oriented, extensible programming language
 license := Python License
-license-file := LICENSE
+license-file := $(sourcedir)/LICENSE
 
 name     := Python
 pyver    := 2.7
@@ -95,7 +95,7 @@ MIN_BUILTINS := $(shell awk '/^  / && $$2 == "builtin" { print $$1 }' \
 		debian/PVER-minimal.README.Debian.in)
 MIN_PACKAGES := $(shell awk '/^  / && $$2 == "package" { print $$1 }' \
 		debian/PVER-minimal.README.Debian.in)
-MIN_ENCODINGS := $(foreach i, \
+MIN_ENCODINGS = $(foreach i, \
 			$(filter-out \
 			  big5% bz2% cp932.py cp949.py cp950.py euc_% \
 			  gb% iso2022% johab.py shift_jis% , \
@@ -118,6 +118,7 @@ scriptdir := usr/lib/python$(VER)
 d_min     := work/proto/python-minimal
 d_lib     := work/proto/libpython
 d_dev     := work/proto/dev-python
+d_base    := work/proto/python
 libdir    := usr/lib$(lib-suffix.$(bits))
 
 python-minimal.p5m: env += proto=$(d_min)
@@ -125,6 +126,8 @@ python-minimal.p5m: env += proto=$(d_min)
 
 install-stamp: postinst-stamp
 postinst-stamp: install-default-stamp
+	gfind $(d) -name '*.py[co]' | gxargs -r rm -f
+	gfind $(d)/usr/lib/python$(VER) -name '*_failed*.so' | gxargs -r rm -f
 	mv $(d)/$(scriptdir)/_sysconfigdata.py \
 		$(d)/$(scriptdir)/_sysconfigdata_nd.py
 	cp $(b)/libpython$(pyver).a \
@@ -162,7 +165,7 @@ postinst-stamp: install-default-stamp
 	$(d)/usr/bin/2to3-$(VER) \
 	> $(d)/usr/share/man/man1/2to3-$(VER).1
 
-	: # install minimal set:
+	: # install runtime/python-minimal:
 	mkdir -p $(d_min)
 	cd $(d_min) && mkdir -p \
 		etc/$(PVER) \
@@ -171,6 +174,9 @@ postinst-stamp: install-default-stamp
 		usr/share/man/man1 \
 		$(scriptdir)/lib-dynload \
 		$(scriptdir)/config
+	cp sitecustomize.py $(d_min)/etc/python$(pyver)/sitecustomize.py
+	ln -sf /etc/python$(pyver)/sitecustomize.py \
+		$(d_min)/usr/lib/python$(pyver)/sitecustomize.py
 	$(movefiles) -s $(d) -d$(d_min) \
 		usr/bin/python$(VER) \
 		usr/share/man/man1/python$(VER).1 \
@@ -185,14 +191,14 @@ postinst-stamp: install-default-stamp
 			  && echo $(scriptdir)/lib-dynload/$$i.so; \
 		  done; true)
 
-	# install libpython:
+	: # install libpython:
 	mkdir -p $(d_lib)
 	$(movefiles) -s $(d) -d $(d_lib) \
 		$(libdir)/libpython$(pyver).so.1.0
 	ln -sf libpython$(pyver).so.1.0 \
 		$(d_lib)/$(libdir)/libpython$(pyver).so.1
 
-	# install developer/python:
+	: # install developer/python:
 	mkdir -p $(d_dev)
 	mkdir -p $(d_dev)/usr/share/man/man1
 	$(movefiles) -s $(d) -d $(d_dev) \
@@ -205,6 +211,31 @@ postinst-stamp: install-default-stamp
 	cp -p debian/python-config.1 \
 		$(d_dev)/usr/share/man/man1/python$(VER)-config.1
 
+	: # No IDLE:
+	rm -rf $(d)/usr/bin/idle* \
+		$(d)/usr/lib/python$(VER)/idlelib
+
+	: # No Tk:
+	rm -rf \
+		$(d)/usr/lib/python$(VER)/lib-dynload/_tkinter.so \
+		$(d)/usr/lib/python$(VER)/lib-tk
+
+	: # install runtime/python:
+	mkdir -p $(d_base)
+	$(movefiles) -s $(d) -d $(d_base) \
+		$(scriptdir)/test/{regrtest.py,test_support.py,__init__.py,pystone.py}
+	rm -rf $(d)/$(scriptdir)/test
+	rm -rf $(d)/$(scriptdir)/ctypes/test
+	rm -rf $(d)/$(scriptdir)/bsddb/test
+	rm -rf $(d)/$(scriptdir)/email/test
+	rm -rf $(d)/$(scriptdir)/json/tests
+	rm -rf $(d)/$(scriptdir)/sqlite3/test
+	rm -rf $(d)/$(scriptdir)/distutils/tests
+	rm -rf $(d)/$(scriptdir)/lib2to3/tests
+	rm -rf $(d)/$(scriptdir)/unittest/test
+	rm -rf $(d)/$(scriptdir)/lib-tk/test
+	$(movefiles) -s $(d) -d $(d_base) \
+		$(scriptdir)
 
 	touch $@
 
