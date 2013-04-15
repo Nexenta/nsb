@@ -135,6 +135,8 @@ postinst-stamp: install-default-stamp
 	rm $(d)/$(scriptdir)/config/*.a
 	ln -sf $(topdir)/$(d)/$(libdir)/libpython$(pyver).a \
 		$(d)/$(scriptdir)/config/libpython$(pyver).a
+	ln -sf $(topdir)/$(d)/$(libdir)/libpython$(pyver).so \
+		$(d)/$(scriptdir)/config/libpython$(pyver).so
 	symlinks -c $(d)/$(scriptdir)/config/
 
 	cp -p debian/_sysconfigdata.py $(d)/$(scriptdir)/
