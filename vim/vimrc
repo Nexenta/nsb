@@ -35,6 +35,7 @@ set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.i
 if &term =~ "xterm-debian" || &term =~ "xterm-xfree86"
   set t_Co=16
   set t_Sfet t_Sb=
+endif
 
 syntax enable
 colorscheme desert
