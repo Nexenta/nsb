@@ -29,11 +29,6 @@ autoconf-stamp: patch-stamp
 
 $(eval $(call add-variant,basic))
 $(eval $(call add-variant,nox))
-$(eval $(call add-variant,tiny))
-
-# Clean protodir, because they do not exist, we do not use them,
-# and pkg requires them to exist
-pkg-protos := -d .
 
 configure-options := \
 	--prefix=/usr \
