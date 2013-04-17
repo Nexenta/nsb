@@ -1,0 +1,17 @@
+set name=pkg.fmri value=pkg:/compress/unzip@$(ips-version)
+set name=pkg.summary value="$(summary)"
+set name=info.upstream-url value="$(home)"
+set name=info.source-url value="$(download)"
+
+license $(license-file) license="$(license)"
+
+file path=usr/bin/funzip
+file path=usr/bin/unzip
+file path=usr/bin/unzipsfx
+file path=usr/bin/zipgrep
+file path=usr/bin/zipinfo
+file path=usr/share/man/man1/funzip.1.gz
+file path=usr/share/man/man1/unzip.1.gz
+file path=usr/share/man/man1/unzipsfx.1.gz
+file path=usr/share/man/man1/zipgrep.1.gz
+file path=usr/share/man/man1/zipinfo.1.gz
