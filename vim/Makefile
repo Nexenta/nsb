@@ -31,7 +31,7 @@ $(eval $(call add-variant,basic))
 $(eval $(call add-variant,nox))
 $(eval $(call add-variant,tiny))
 
-# Clean protodir, because they do not exist, e do not use them,
+# Clean protodir, because they do not exist, we do not use them,
 # and pkg requires them to exist
 pkg-protos := -d .
 
